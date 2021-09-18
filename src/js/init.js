@@ -17,6 +17,12 @@ init.initipc = function (win, ipc, shell, app) {
   ipc.on('closeapp', function (event) {
     app.exit()
   })
+  ipc.on('maxapp', function (event) {
+    win.maximize()
+  })
+  ipc.on('minapp', function (event) {
+    win.minimize()
+  })
   ipc.on('closewin', function (event) {
     win.close()
   })

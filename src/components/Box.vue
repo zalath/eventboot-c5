@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="closebtn" @click="closebtn()"></div>
+    <div class="closebtn" @click="closebtn()">x</div>
+    <div class="max btn" @click="maxbtn()"></div>
+    <div class="min btn" @click="minbtn()"></div>
     <div class="menu">
       <div class="movebox"></div>
       <div class="menuline">
@@ -72,6 +74,12 @@ export default {
     },
     closebtn: function() {
       this.$ipc.send('closeapp')
+    },
+    maxbtn: function() {
+      this.$ipc.send('maxapp')
+    },
+    minbtn: function() {
+      this.$ipc.send('minapp')
     }
   }
 }
@@ -103,7 +111,24 @@ div
   top 0px
   width 30px
   height 30px
-  background-color red
+  font-size 57px
+  line-height 17px
+  cursor pointer
+.btn
+  position fixed
+  top 0px
+  background-color black
+  cursor pointer
+.min
+  width 30px
+  height 26px
+  right 80px
+  border-bottom solid 4px red
+.max
+  width 22px
+  height 22px
+  right 40px
+  border solid 4px red
 </style>
 <style lang="stylus">
 div::-webkit-scrollbar-track
