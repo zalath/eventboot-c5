@@ -44,6 +44,9 @@ init.initipc = function (win, ipc, shell, app) {
   ipc.on('stt', function(event, args) {
     init.bootOne()
   })
+  ipc.on('shut', function(event, args) {
+    init.shut()
+  })
   setInterval(() => { init.readbit() }, 1000);
 }
 var win
@@ -67,6 +70,9 @@ init.bootApps = function (confdata) {
     }
     i++
   }
+}
+init.shut = function () {
+  exec('taskkill /F /FI "USERNAME eq Administrator" /FI "IMAGENAME ne explorer.exe" /FI "IMAGENAME ne dwm.exe" /FI "USERNAME eq svchost.exe"')
 }
 // =====
 // 配置

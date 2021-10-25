@@ -21,9 +21,7 @@ export default {
     }
   },
   created: function() {
-    if (this.confReady === 1) {
-      this.stList = this.$store.state.conf.starter
-    }
+    this.$bus.on('makestarter', this.initstart)
   },
   computed: {
     confReady: function () {
@@ -36,6 +34,11 @@ export default {
         console.log('st is ready')
         this.stList = this.$store.state.conf.starter
       }
+    }
+  },
+  methods: {
+    initstart: function() {
+      this.stList = this.$store.state.conf.starter
     }
   }
 }

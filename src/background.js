@@ -50,7 +50,7 @@ async function createWindow () {
     if (input.control && input.key.toLocaleLowerCase() === 'f') {
       win.webContents.send('setpage', 3);
     }
-    if (input.control && input.key.toLocaleLowerCase() === 'o') {
+    if (input.control && input.key.toLocaleLowerCase() === 'q') {
       win.webContents.send('setpage', 4);
     }
     if (input.control && input.key.toLocaleLowerCase() === 'w') {
@@ -82,7 +82,7 @@ app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installExtension(VUEJS_DEVTOOLS)
+      // await installExtension(VUEJS_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }

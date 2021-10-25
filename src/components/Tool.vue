@@ -7,46 +7,52 @@
           <h1>TIME</h1>
           <div>
             {{timestamps}}
-            <a class="fa fa-copy" @click="copy(timestamps)"></a>
-            <br/>
+            <a class="fa fa-copy" @click="copy(timestamps)"></a>&emsp;
             {{timestamp}}
-            <a class="fa fa-copy" @click="copy(timestamp)"></a>
-            <br/>
+            <a class="fa fa-copy" @click="copy(timestamp)"></a>&emsp;
             {{dateval}}
-            <a class="fa fa-copy" @click="copy(dateval)"></a>
-            <br/>
-            <textarea class="wNine" v-model="dateval" /><br/>
+            <a class="fa fa-copy" @click="copy(dateval)"></a>&emsp;
+            <textarea class="wNine f20" v-model="dateval" /><br/>
             <a title='convert' class='fa fa-calendar-check-o' @click="convert()"></a>
-            <br/>
+            &emsp;
             <a title='refresh' class='fa fa-refresh' @click="settime()"></a>
           </div>
         </div>
         <div class="tbox">
           <h1>base64</h1>
           <div>
-            <textarea class="wNine" v-model="debase64val"/>
+            <textarea class="wNine f20" v-model="debase64val"/>
             <br/>
             <a class="fa fa-cog" @click="base64()"></a>
+            &emsp;
+            <a class="fa fa-copy" @click="copy(debase64val)"></a>
             <br />
-            <textarea class="wNine" v-model="base64val"/>
+            <textarea class="wNine f20" v-model="base64val"/>
             <br/>
             <a class="fa fa-cog" @click="debase64()"></a>
+            &emsp;
+            <a class="fa fa-copy" @click="copy(base64val)"></a>
           </div>
           <h1>url</h1>
           <div>
-            <textarea class="wNine" v-model="deurlval"/>
+            <textarea class="wNine f20" v-model="deurlval"/>
             <br/>
             <a class="fa fa-cog" @click="url()"></a>
+            &emsp;
+            <a class="fa fa-copy" @click="copy(deurlval)"></a>
             <br/>
-            <textarea class="wNine" v-model="urlval"/>
+            <textarea class="wNine f20" v-model="urlval"/>
             <br/>
             <a class="fa fa-cog" @click="deurl()"></a>
+            &emsp;
+            <a class="fa fa-copy" @click="copy(urlval)"></a>
           </div>
           <h1>md5</h1>
           <div>
-            <textarea class="wNine" v-model="md5str" />
+            <textarea class="wNine f20" v-model="md5str" />
             <br/>
             <a class="fa fa-cog" @click="md5()"></a>
+            &emsp;
             <a class="fa fa-copy" @click="copy(md5str)"></a>
           </div>
         </div>
@@ -175,4 +181,15 @@ textarea
   border solid 1px red
   color red
   outline none
+.fa
+  font-size 30px
+  margin auto
+.tbox div
+  text-align center
+.tlist div
+  text-align center
+.f20
+  font-size 20px
+.tbox h1
+  text-align left
 </style>

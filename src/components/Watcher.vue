@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="app">
     <div>
-      <div id="cpu" style="width:90%;height:330px;"></div>
-      <div id="mem" style="width:90%;height:330px;"></div>
+      <div id="cpu" style="width:400px;height:330px;"></div>
+      <div id="mem" style="width:400px;height:330px;"></div>
     </div>
   </div>
 </template>

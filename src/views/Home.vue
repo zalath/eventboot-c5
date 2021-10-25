@@ -23,6 +23,8 @@ export default {
     this.$ipc.on('initd', (event, e) => {
       this.$store.commit('setConf', e)
       this.$store.commit('setConfReady', 1)
+      console.log('sending starter')
+      this.$bus.emit('makestarter', '1')
     })
     this.$ipc.send('initd')
     this.$ipc.on('confsaved', (event, e) => {

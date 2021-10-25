@@ -9,18 +9,19 @@
         <a @click="page=1">[t]ask</a>
         <a @click="page=2">[s]tarter</a>
         <a @click="page=3">con[f]</a>
-        <a @click="page=4">t[o]ol</a>
+        <a @click="page=4">t[q]ol</a>
         <a @click="page=5">[w]atcher</a>
         <a @click="boot()">boot</a>
         <a v-for="(m,id) in menu" :key="id" @click="handle(m.url)">{{m.name}}</a>
+        <a @click="shut()">shut</a>
       </div>
     </div>
     <div class="mainbody">
-      <Task v-if="page === 1"/>
-      <Starter v-if="page === 2"/>
-      <Conf v-if="page === 3"/>
-      <Tool v-if="page === 4"/>
-      <Watcher v-if="page === 5"/>
+      <Task v-show="page === 1"/>
+      <Starter v-show="page === 2"/>
+      <Conf v-show="page === 3"/>
+      <Tool v-show="page === 4"/>
+      <Watcher v-show="page === 5"/>
     </div>
   </div>
 </template>
@@ -80,6 +81,9 @@ export default {
     },
     minbtn: function() {
       this.$ipc.send('minapp')
+    },
+    shut: function() {
+      this.$ipc.send('shut')
     }
   }
 }
