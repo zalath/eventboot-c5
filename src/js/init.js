@@ -72,7 +72,14 @@ init.bootApps = function (confdata) {
   }
 }
 init.shut = function () {
-  exec('taskkill /F /FI "USERNAME eq Administrator" /FI "IMAGENAME ne explorer.exe" /FI "IMAGENAME ne dwm.exe" /FI "USERNAME eq svchost.exe"')
+  console.log('ending tasks')
+  exec('taskkill /F /FI "USERNAME eq Administrator"',
+    function (e, data) {
+      if (e) {
+        console.log(e)
+        win.webContents.send('errmsg', JSON.stringify(e))
+      }
+    })
 }
 // =====
 // 配置

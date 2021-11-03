@@ -3,8 +3,13 @@
     <div v-if='isshow' v-on='{ mouseenter: showbtn, mouseleave: hidebtn }'>
       <div :class="'tik tik'+tlin.tik" @click='tik()'></div>
       <a :class="'tikname' + tlin.tik" @click='showlins()'>{{ tlin.title }}
-        <a v-if='tlin.ct > 0'>{{ tlin.ct }}</a>
+        <!-- <a v-if='tlin.ct > 0'>{{ tlin.ct }}</a> -->
       </a>
+      <template v-if="lin.tikc.length > 0">
+        <a v-for="(t) in lin.tikc" :key="t.tik">
+          <a :class="'fa tikname'+t.tik">{{t.c}}</a>
+        </a>
+      </template>
       <template v-if='isbtn'>
         <a class='fa fa-plus' @click='newl()'></a>
         <a class='fa fa-pencil' @click='edit()'></a>
@@ -129,4 +134,7 @@ a
   color #999
 .isdel
   display inline-block
+.fblack
+  color black
+  padding 3px
 </style>

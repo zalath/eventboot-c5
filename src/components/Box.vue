@@ -5,15 +5,22 @@
     <div class="min btn" @click="minbtn()"></div>
     <div class="menu">
       <div class="movebox"></div>
-      <div class="menuline">
-        <a @click="page=1">[t]ask</a>
-        <a @click="page=2">[s]tarter</a>
-        <a @click="page=3">con[f]</a>
-        <a @click="page=4">t[q]ol</a>
-        <a @click="page=5">[w]atcher</a>
-        <a @click="boot()">boot</a>
-        <a v-for="(m,id) in menu" :key="id" @click="handle(m.url)">{{m.name}}</a>
-        <a @click="shut()">shut</a>
+      <div>
+        <div class="menuline">
+          <a @click="page=1">[t]ask</a>
+          <a @click="page=2">[s]tarter</a>
+          <a @click="page=3">con[f]</a>
+          <a @click="page=4">t[q]ol</a>
+          <a @click="page=5">[w]atcher</a>
+        </div>
+        &emsp;
+        <span>/</span>
+        &emsp;&nbsp;&nbsp;
+        <div style="float:right;margin-top:-20px;">
+          <a @click="boot()">boot</a>
+          <a v-for="(m,id) in menu" :key="id" @click="handle(m.url)">{{m.name}}</a>
+          <a @click="shut()">shut</a>
+        </div>
       </div>
     </div>
     <div class="mainbody">
@@ -50,6 +57,9 @@ export default {
     this.$ipc.on('setpage', (event, e) => {
       this.setpage(e)
     })
+    this.$ipc.on('errmsg', (event, e) => {
+      this.showerr(e)
+    })
   },
   computed: {
     confReady: function() {
@@ -84,6 +94,9 @@ export default {
     },
     shut: function() {
       this.$ipc.send('shut')
+    },
+    showerr: function(e) {
+      alert(e)
     }
   }
 }
@@ -109,6 +122,8 @@ div
   -webkit-app-region drag
 .menuline
   float left
+.menulinetool
+  margin-top 10px
 .closebtn
   position fixed
   right 0px
