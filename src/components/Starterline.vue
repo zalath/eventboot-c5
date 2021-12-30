@@ -39,8 +39,13 @@ export default {
   height 30px
   cursor pointer
   z-index 10
+  border solid 1px black
   &:hover
-    border solid 1px red
+    background-color red
+    .line {
+      background-color red
+      color white
+    }
 .line
   color red
   background-color black

@@ -2,7 +2,12 @@
   <div id="app">
     <div class="toolbox">
       <input ref="inputCopy" value="for copy" style="opacity:0;position:absolute" />
+      <br/>
+      <a @click="genclist()">加密列表</a>
       <div class="tlist">
+        <div class="tbox">
+          <h1>IP</h1>{{ip}}<a class="fa fa-copy" @click="copy(ip)"></a>
+        </div>
         <div class="tbox">
           <h1>TIME</h1>
           <div>
@@ -71,12 +76,24 @@
         </div>
         <br/>
       </div>
+      <div class="tbox">
+        <h1>qrcode</h1>
+        <div>
+          <textarea class="wNine f20" v-model="qrtxt"/>
+          <br/>
+          <a class="fa fa-cog" @click="qrcode()"></a>
+          <br />
+          <div class="fa wNine" ref="qrdiv"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import md5 from 'js-md5'
+// import Qrcode from 'qrcodejs2'
+const Ip = require('ip')
 const base64 = require('js-base64').Base64;
 // import Cb from 'clipboard'
 export default {
@@ -96,13 +113,19 @@ export default {
       debase64val: '',
       urlval: '',
       deurlval: '',
-      md5str: ''
+      md5str: '',
+      qrtxt: '',
+      ip: Ip.address()
     }
   },
   created: function() {
     this.settime()
   },
   methods: {
+    genclist: function() {
+      console.log(222)
+      this.$ipc.send('genclist')
+    },
     settime: function() {
       this.timestamp = new Date().valueOf()
       this.timestamps = parseInt(this.timestamp / 1000)
@@ -160,6 +183,18 @@ export default {
     },
     md5: function() {
       this.md5str = md5(this.md5str)
+    },
+    qrcode: function() {
+      this.$refs.qrdiv.innerHTML = ''
+      // var qr = new Qrcode(this.$refs.qrdiv, {
+      //   text: this.qrtxt,
+      //   width: 200,
+      //   height: 200,
+      //   colorDark: '#333',
+      //   colorLight: '#fff',
+      //   correctLevel: Qrcode.CorrectLevel.L
+      // })
+      // qr.width = 200
     }
   }
 }

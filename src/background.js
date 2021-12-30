@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain, shell, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+// import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 // import { globalShortcut } from 'electron/main'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const ipc = ipcMain

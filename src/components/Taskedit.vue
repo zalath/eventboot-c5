@@ -85,17 +85,22 @@ export default {
   position: fixed;
   top: 20px;
   left: 25%;
-  background-color: white;
-  border: solid 1px black;
+  background-color: black;
+  border: solid 1px red;
   width: 50%;
   text-align: left;
   overflow: hidden;
+  padding: 20px;
 }
 .btns {
   float: right;
+  font-size:30px;
 }
 .input {
   width: 100%;
-  border: none;
+  border:none;
+  border-bottom: solid 1px red;
+  background-color: black;
+  color:aqua
 }
 </style>

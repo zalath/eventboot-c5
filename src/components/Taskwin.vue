@@ -83,7 +83,9 @@ export default {
   height 10px
   display inline-block
   margin-left 5px
-
+  border-bottom-right-radius 50%
+  border-top-right-radius 50%
+  border-bottom-left-radius 50%
 a
   cursor pointer
 </style>

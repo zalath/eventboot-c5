@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div v-if='isshow' v-on='{ mouseenter: showbtn, mouseleave: hidebtn }'>
-      <div :class="'tik tik'+tlin.tik" @click='tik()'></div>
+    <div class="taskline" v-if='isshow' v-on='{ mouseenter: showbtn, mouseleave: hidebtn }'>
+      <div class="tikbox">
+        <div :class="'tik tikborder tik'+tlin.tik" @click='tik()'></div>
+        <div :class="'tik tikborder tikshadow tik'+tlin.tik"></div>
+      </div>
       <a :class="'tikname' + tlin.tik" @click='showlins()'>{{ tlin.title }}
         <!-- <a v-if='tlin.ct > 0'>{{ tlin.ct }}</a> -->
       </a>
@@ -137,4 +140,27 @@ a
 .fblack
   color black
   padding 3px
+.taskline
+  &:hover {
+    .tikshadow {
+      animation run 200ms forwards
+    }
+  }
+@keyframes run
+  from
+    clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,0 90%)
+  to
+    clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,0 90%)
+.tikbox
+  position relative
+  display inline-block
+.tik
+  border-radius 0
+.tikshadow
+  opacity 0.6
+  position absolute
+  left 3px
+  top 5px
+.tikborder
+  clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,0 90%)
 </style>

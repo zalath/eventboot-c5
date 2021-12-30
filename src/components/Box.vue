@@ -7,19 +7,19 @@
       <div class="movebox"></div>
       <div>
         <div class="menuline">
-          <a @click="page=1">[t]ask</a>
-          <a @click="page=2">[s]tarter</a>
-          <a @click="page=3">con[f]</a>
-          <a @click="page=4">t[q]ol</a>
-          <a @click="page=5">[w]atcher</a>
+          <div :class="[page==1?'on':'',' menubtn']" @click="page=1">[t]ask</div>
+          <div :class="[page==2?'on':'',' menubtn']" @click="page=2">[s]tarter</div>
+          <div :class="[page==3?'on':'',' menubtn']" @click="page=3">con[f]</div>
+          <div :class="[page==4?'on':'',' menubtn']" @click="page=4">t[q]ol</div>
+          <div :class="[page==5?'on':'',' menubtn']" @click="page=5">[w]atcher</div>
         </div>
         &emsp;
-        <span>/</span>
+        <span class="menuline menubtn">/</span>
         &emsp;&nbsp;&nbsp;
-        <div style="float:right;margin-top:-20px;">
-          <a @click="boot()">boot</a>
-          <a v-for="(m,id) in menu" :key="id" @click="handle(m.url)">{{m.name}}</a>
-          <a @click="shut()">shut</a>
+        <div class="menuline" style="float:right;margin-top:-20px;">
+          <div class="menubtn" @click="boot()">boot</div>
+          <div class="menubtn" v-for="(m,id) in menu" :key="id" @click="handle(m.url)">{{m.name}}</div>
+          <div class="menubtn" @click="shut()">shut</div>
         </div>
       </div>
     </div>
@@ -113,7 +113,8 @@ div
 .menu a
   margin-left 20px
 .mainbody
-  margin-top:4px;
+  margin:34px auto;
+  width:90%;
 .movebox
   width 30px
   height 30px
@@ -122,6 +123,20 @@ div
   -webkit-app-region drag
 .menuline
   float left
+.menubtn
+  display inline-block
+  padding 0px 15px
+  height 30px
+  line-height 30px
+  color red
+  cursor pointer
+  background-color black
+  &:hover
+    background-color red
+    color white
+.on
+  background-color red
+  color white
 .menulinetool
   margin-top 10px
 .closebtn
