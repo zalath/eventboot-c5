@@ -4,7 +4,7 @@
       <h2>starter</h2>
       <div v-for='(s,ind) in config.starter' :key='ind' v-light="ind">
         <span v-drag="ind" class="dragbar">
-          <span>{{ind}}:</span>
+          <span>{{ind}}:</span>&emsp;
           <input v-if='s != ""' @change='changeval($event,"starter",ind,"name")' :value='s.name'/>
           <input v-if='s != ""' @change='changeval($event,"starter",ind,"path")' :value='s.path'/>
           <div class="fa fa-times funcbtn" @click="del('starter',ind)"></div>
@@ -18,7 +18,7 @@
 
       <h2>menu</h2>
       <div v-for='(s,ind) in config.menu' :key='ind'>
-        <span>{{ind}}:</span>
+        <span>{{ind}}:</span>&emsp;
         <input @change='changeval($event,"menu",ind,"name")' :value='s.name'/>
         <input @change='changeval($event,"menu",ind,"url")' :value='s.url'/>
         <div class="fa fa-times funcbtn" @click="del('menu',ind)"></div>
@@ -31,7 +31,7 @@
 
       <h2>boot</h2>
       <div v-for='(s,ind) in config.boot' :key='ind'>
-        <span>{{ind}}:</span>
+        <span>{{ind}}:</span>&emsp;
         <input @change='changeval($event,"boot",ind,"")' :value='s'/>
         <div class="fa fa-times funcbtn" @click="del('boot',ind)"></div>
       </div>
@@ -39,6 +39,16 @@
       <div>
         <div class="fa fa-plus funcbtn" @click="add('boot')"></div>
       </div>
+      <h2>conf</h2>
+      <div>
+        <span>api:</span>&emsp;
+        <input v-if='config.conf' @change='changeval($event,"conf","api","")' :value='config.conf.api'/>
+      </div>
+      <div>
+        <span>src:</span>&emsp;
+        <input v-if='config.conf' @change='changeval($event,"conf","src","")' :value='config.conf.src'/>
+      </div>
+      <br/>
       <div class="fa fa-check cp" @click="setconf()"></div>
     </div>
   </div>

@@ -36,7 +36,7 @@ export default {
   methods: {
     getlins() {
       // console.log(this.pid);
-      req.post('list', { id: this.pid }).then((res) => {
+      req.post(this.$store.state.conf, 'list', { id: this.pid }).then((res) => {
         // console.log(res)
         this.lins = res.data;
       });

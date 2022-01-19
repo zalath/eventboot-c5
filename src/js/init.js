@@ -1,17 +1,19 @@
 'use strict'
-
 const exec = require('child_process').exec;
 const cpu = require('cpu-stat')
 const os = require('os')
 const encpt = require('../js/encpt')
 const conf = require('../js/conf')
+global.isloaded = false
+conf.getconfig()
 class init { }
 init.initipc = function (win, ipc, shell, app) {
+  this.win = win
   ipc.on('bootenv', function (event, e) {
-    conf.getconfig(win, init.bootApps)
+    init.bootApps()
   })
   ipc.on('initd', function (event, e) {
-    init.bootUp(win)
+    win.webContents.send('initd', global.gconf)
   })
   ipc.on('tobrowser', function (event, arg) {
     shell.openExternal(arg)
@@ -30,7 +32,11 @@ init.initipc = function (win, ipc, shell, app) {
   })
   // 配置
   ipc.on('getconfig', function(event) {
-    conf.getconfig(win, conf.sendconf)
+    if (global.gconf) {
+      win.webContents.send('loaded', global.gconf)
+    } else {
+      win.webContents.send('nload')
+    }
   })
   ipc.on('setconfig', function(event, e) {
     conf.setconfig(win, e);
@@ -54,21 +60,10 @@ init.initipc = function (win, ipc, shell, app) {
   })
   setInterval(() => { init.readbit() }, 1000);
 }
-var win
-init.bootUp = function (window) {
-  win = window
-  conf.getconfig(win, init.init_main)
-}
-init.init_main = function (win, confdata) {
-  win.webContents.send('initd', confdata)
-}
-init.bootApps = function (win, confdata) {
-  var list = confdata.boot
+init.bootApps = function () {
+  var list = global.gconf.boot
   var i = 0
-  console.log(confdata)
   while (typeof (list[i]) !== 'undefined') {
-    console.log(i)
-    console.log(list[i])
     if (list[i].indexOf('/') > 0) {
       exec('"' + list[i] + '"')
     } else {
@@ -83,19 +78,19 @@ init.shut = function () {
     function (e, data) {
       if (e) {
         console.log(e)
-        win.webContents.send('errmsg', JSON.stringify(e))
+        init.win.webContents.send('errmsg', JSON.stringify(e))
       }
     })
 }
 init.readbit = function () {
   cpu.usagePercent(init.usagePercent);
-  if (win) win.webContents.send('addmemdata', (os.totalmem() - os.freemem()) * 100 / os.totalmem())
-  // read disk usage
-  // read network usage
+  if (init.win) {
+    init.win.webContents.send('addmemdata', (os.totalmem() - os.freemem()) * 100 / os.totalmem())
+  }
 }
 init.usagePercent = function (msg, rate, diffsecond) {
   if (msg == null) {
-    if (win) win.webContents.send('addcpudata', rate);
+    if (init.win) init.win.webContents.send('addcpudata', rate);
   }
 }
 module.exports = init

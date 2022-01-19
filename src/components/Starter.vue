@@ -21,7 +21,7 @@ export default {
     }
   },
   created: function() {
-    this.$bus.on('makestarter', this.initstart)
+    this.initstart()
   },
   computed: {
     confReady: function () {

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="taskline" v-if='isshow' v-on='{ mouseenter: showbtn, mouseleave: hidebtn }'>
-      <div class="tikbox">
-        <div :class="'tik tikborder tik'+tlin.tik" @click='tik()'></div>
+      <div class="tikbox" @click='tik()'>
+        <div :class="'tik tikborder tik'+tlin.tik"></div>
         <div :class="'tik tikborder tikshadow tik'+tlin.tik"></div>
       </div>
       <a :class="'tikname' + tlin.tik" @click='showlins()'>{{ tlin.title }}
@@ -44,7 +44,8 @@ export default {
       isdel: false,
       isshow: true,
       tlin: this.lin,
-      ishlight: 0
+      ishlight: 0,
+      gconf: this.$store.state.conf
     }
   },
   created() {
@@ -66,7 +67,7 @@ export default {
     },
     getlins() {
       var that = this
-      req.post('list', { id: this.tlin.id }).then((res) => {
+      req.post(this.gconf, 'list', { id: this.tlin.id }).then((res) => {
         that.tlin.Child = res.data
       })
     },
@@ -76,7 +77,7 @@ export default {
       } else {
         this.tlin.tik += 1
       }
-      req.post('tik', { id: this.tlin.id, tik: this.tlin.tik })
+      req.post(this.gconf, 'tik', { id: this.tlin.id, tik: this.tlin.tik })
     },
     newl() {
       this.$bus.emit('new', { pid: this.tlin.id })
@@ -85,7 +86,7 @@ export default {
       this.$bus.emit('edit', { lin: this.tlin })
     },
     del() {
-      req.post('del', { id: this.tlin.id }).then((res) => {
+      req.post(this.gconf, 'del', { id: this.tlin.id }).then((res) => {
         if (res.data === 'done') {
           this.$bus.emit('del' + this.tlin.pid, this.tlin.id)
         }
@@ -154,6 +155,7 @@ a
 .tikbox
   position relative
   display inline-block
+  cursor pointer
 .tik
   border-radius 0
 .tikshadow

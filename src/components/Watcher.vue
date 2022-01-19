@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="app">
     <div>
-      <div id="cpu" style="width:400px;height:330px;"></div>
-      <div id="mem" style="width:400px;height:330px;"></div>
+      <div id="cpu" :style="'width:'+winw+'px;height:330px;'"></div>
+      <div id="mem" :style="'width:'+winw+'px;height:330px;'"></div>
     </div>
   </div>
 </template>
@@ -16,12 +16,22 @@ export default {
   data: function() {
     return {
       stList: [],
-      closetitle: 'watcherclose'
+      closetitle: 'watcherclose',
+      winw: 0,
+      cpuChart: {},
+      memChart: {}
     }
   },
   created: function() {
+    this.winw = document.body.clientWidth * 0.8
   },
   mounted() {
+    var that = this
+    window.onresize = () => {
+      that.winw = document.body.clientWidth * 0.8
+      that.cpuChart.resize()
+      that.memChart.resize()
+    }
     this.paintchart()
   },
   methods: {
@@ -32,11 +42,13 @@ export default {
       console.log(e)
     },
     paintchart() {
+      console.log('init chart')
       var wathchpoint = 30
-      var cpuChart = echarts.init(document.getElementById('cpu'));
-      this.initchart(cpuChart, 'cpu')
+      this.cpuChart = echarts.init(document.getElementById('cpu'));
+      this.initchart(this.cpuChart, 'cpu')
       var cpuT = []
       var cpuR = []
+      var that = this
       this.$ipc.on('addcpudata', function(event, data) {
         if (cpuT.length > wathchpoint) {
           cpuT.shift()
@@ -45,7 +57,7 @@ export default {
         var date = new Date();
         cpuT.push([date.getHours(), date.getMinutes(), date.getSeconds()].join(':'))
         cpuR.push(data)
-        cpuChart.setOption({
+        that.cpuChart.setOption({
           xAxis: {
             data: cpuT
           },
@@ -55,8 +67,8 @@ export default {
           }]
         })
       })
-      var memChart = echarts.init(document.getElementById('mem'));
-      this.initchart(memChart, 'mem')
+      this.memChart = echarts.init(document.getElementById('mem'));
+      this.initchart(this.memChart, 'mem')
       var memT = []
       var memR = []
       this.$ipc.on('addmemdata', function(event, data) {
@@ -67,7 +79,7 @@ export default {
         var date = new Date();
         memT.push([date.getHours(), date.getMinutes(), date.getSeconds()].join(':'))
         memR.push(data)
-        memChart.setOption({
+        that.memChart.setOption({
           xAxis: {
             data: memT
           },

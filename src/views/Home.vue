@@ -1,44 +1,48 @@
 <template>
   <div class="home">
-    <box></box>
+    <template v-if="isloading">
+      <loading></loading>
+    </template>
+    <template v-else>
+      <box></box>
+    </template>
   </div>
 </template>
 
 <script>
 import Box from '@/components/Box'
+import Loading from '@/components/Loading'
 
 export default {
   name: 'Home',
   components: {
-    Box
+    Box,
+    Loading
   },
   data: function() {
     return {
-      config: {}
+      config: {},
+      isloading: true
     }
   },
   created() {
     var that = this
-    console.log('make window')
-    this.$ipc.on('initd', (event, e) => {
-      this.$store.commit('setConf', e)
-      this.$store.commit('setConfReady', 1)
-      console.log('sending starter')
-      this.$bus.emit('makestarter', '1')
-    })
-    this.$ipc.send('initd')
-    this.$ipc.on('confsaved', (event, e) => {
-      console.log('ok')
-    })
-    this.$ipc.on('confdata', (event, e) => {
-      var c = JSON.parse(JSON.stringify(e))
-      that.$ipc.send('setconfig', c)
-    })
+    console.log('starting')
+    setTimeout(() => {
+      this.$ipc.send('getconfig')
+      this.$ipc.on('nload', function(event, e) {
+        setTimeout(() => {
+          that.$ipc.send('getconfig')
+        }, 1000);
+      })
+      this.$ipc.on('loaded', function(event, e) {
+        that.isloading = false
+        that.$store.commit('setConf', e)
+        that.$store.commit('setConfReady', 1)
+      })
+    }, 2000)
   },
   methods: {
-    saveconf: function() {
-      this.$ipc.send('getconfig')
-    }
   }
 }
 </script>
