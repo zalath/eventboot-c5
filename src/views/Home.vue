@@ -28,19 +28,19 @@ export default {
   created() {
     var that = this
     console.log('starting')
-    setTimeout(() => {
-      this.$ipc.send('getconfig')
-      this.$ipc.on('nload', function(event, e) {
-        setTimeout(() => {
-          that.$ipc.send('getconfig')
-        }, 1000);
-      })
-      this.$ipc.on('loaded', function(event, e) {
-        that.isloading = false
-        that.$store.commit('setConf', e)
-        that.$store.commit('setConfReady', 1)
-      })
-    }, 2000)
+    // setTimeout(() => {
+    this.$ipc.send('getconfig')
+    this.$ipc.on('nload', function(event, e) {
+      setTimeout(() => {
+        that.$ipc.send('getconfig')
+      }, 1000);
+    })
+    this.$ipc.on('loaded', function(event, e) {
+      that.isloading = false
+      that.$store.commit('setConf', e)
+      that.$store.commit('setConfReady', 1)
+    })
+    // }, 2000)
   },
   methods: {
   }

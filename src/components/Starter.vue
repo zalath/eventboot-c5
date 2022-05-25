@@ -23,19 +23,6 @@ export default {
   created: function() {
     this.initstart()
   },
-  computed: {
-    confReady: function () {
-      return this.$store.state.confReady
-    }
-  },
-  watch: {
-    starterReady: function (newst, oldst) {
-      if (newst === 1) {
-        console.log('st is ready')
-        this.stList = this.$store.state.conf.starter
-      }
-    }
-  },
   methods: {
     initstart: function() {
       this.stList = this.$store.state.conf.starter

@@ -4,23 +4,15 @@
     <div class="max btn" @click="maxbtn()"></div>
     <div class="min btn" @click="minbtn()"></div>
     <div class="menu">
-      <div class="movebox"></div>
-      <div>
-        <div class="menuline">
-          <div :class="[page==1?'on':'',' menubtn']" @click="page=1">[t]ask</div>
-          <div :class="[page==2?'on':'',' menubtn']" @click="page=2">[s]tarter</div>
-          <div :class="[page==3?'on':'',' menubtn']" @click="page=3">con[f]</div>
-          <div :class="[page==4?'on':'',' menubtn']" @click="page=4">t[q]ol</div>
-          <div :class="[page==5?'on':'',' menubtn']" @click="page=5">[w]atcher</div>
-        </div>
-        &emsp;
-        <span class="menuline menubtn">/</span>
-        &emsp;&nbsp;&nbsp;
-        <div class="menuline" style="float:right;margin-top:-20px;">
-          <div class="menubtn" @click="boot()">boot</div>
-          <div class="menubtn" v-for="(m,id) in menu" :key="id" @click="handle(m.url)">{{m.name}}</div>
-          <div class="menubtn" @click="shut()">shut</div>
-        </div>
+      <!-- <div class="movebox"></div> -->
+      <div class="menuline">
+        <div :class="[page==1?'on':'',' menubtn']" @click="page=1">[t]ask</div>
+        <div :class="[page==2?'on':'',' menubtn']" @click="page=2">[s]tarter</div>
+        <div :class="[page==3?'on':'',' menubtn']" @click="page=3">con[f]</div>
+        <div :class="[page==4?'on':'',' menubtn']" @click="page=4">t[q]ol</div>
+        <div class="menubtn" @click="boot()">&gt;boot</div>
+        <div class="menubtn" v-for="(m,id) in menu" :key="id" @click="handle(m.url)">&gt;{{m.name}}</div>
+        <div class="menubtn" @click="shut()">&gt;shut</div>
       </div>
     </div>
     <div class="mainbody">
@@ -28,7 +20,7 @@
       <Starter v-show="page === 2"/>
       <Conf v-show="page === 3"/>
       <Tool v-show="page === 4"/>
-      <Watcher v-show="page === 5"/>
+      <!-- <Watcher v-show="page === 5"/> -->
     </div>
   </div>
 </template>
@@ -37,14 +29,14 @@ import Task from './Task'
 import Starter from './Starter'
 import Conf from './Conf'
 import Tool from './Tool'
-import Watcher from './Watcher'
+// import Watcher from './Watcher'
 export default {
   components: {
     Task,
     Starter,
     Conf,
-    Tool,
-    Watcher
+    Tool
+    // ,Watcher
   },
   name: 'Box',
   data: function() {
@@ -54,24 +46,13 @@ export default {
     }
   },
   created() {
+    this.menu = this.$store.state.conf.menu
     this.$ipc.on('setpage', (event, e) => {
       this.setpage(e)
     })
     this.$ipc.on('errmsg', (event, e) => {
       this.showerr(e)
     })
-  },
-  computed: {
-    confReady: function() {
-      return this.$store.state.confReady
-    }
-  },
-  watch: {
-    confReady: function(newval, oldval) {
-      if (newval === 1) {
-        this.menu = this.$store.state.conf.menu
-      }
-    }
   },
   methods: {
     handle: function(url) {
@@ -110,16 +91,19 @@ div
   z-index 20
   top 0px
   position fixed
+  width 100%
+  background-color red
 .menu a
   margin-left 20px
 .mainbody
   margin:34px auto;
   width:90%;
 .movebox
-  width 30px
+  width 100%
   height 30px
+  z-index -1
   background-color red
-  float left
+  position absolute
   -webkit-app-region drag
 .menuline
   float left
@@ -128,15 +112,16 @@ div
   padding 0px 15px
   height 30px
   line-height 30px
-  color red
-  cursor pointer
-  background-color black
-  &:hover
-    background-color red
-    color white
-.on
-  background-color red
   color white
+  cursor pointer
+  background-color red
+  -webkit-app-region no-drag
+  &:hover
+    background-color black
+    color red
+.on
+  background-color black
+  color red
 .menulinetool
   margin-top 10px
 .closebtn
@@ -148,21 +133,26 @@ div
   font-size 57px
   line-height 17px
   cursor pointer
+  color white
+  z-index 30
+  -webkit-app-region no-drag
 .btn
   position fixed
+  -webkit-app-region no-drag
   top 0px
-  background-color black
+  background-color red
   cursor pointer
+  z-index 30
 .min
   width 30px
   height 26px
   right 80px
-  border-bottom solid 4px red
+  border-bottom solid 4px white
 .max
   width 22px
   height 22px
   right 40px
-  border solid 4px red
+  border solid 4px white
 </style>
 <style lang="stylus">
 div::-webkit-scrollbar-track

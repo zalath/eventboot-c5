@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="taskline" v-if='isshow' v-on='{ mouseenter: showbtn, mouseleave: hidebtn }'>
+    <div class="taskline" v-if='isshow' v-on='{ mouseenter: mouseInOut, mouseleave: mouseInOut }'>
       <div class="tikbox" @click='tik()'>
         <div :class="'tik tikborder tik'+tlin.tik"></div>
         <div :class="'tik tikborder tikshadow tik'+tlin.tik"></div>
@@ -17,7 +17,7 @@
         <a class='fa fa-plus' @click='newl()'></a>
         <a class='fa fa-pencil' @click='edit()'></a>
         <a class='fa fa-refresh' @click='refresh()' v-if='tlin.ct > 0'></a>
-        <a class='fa fa-times' @click='toggledel()'></a>
+        <a class='fa fa-times' @click='isdel=!isdel'></a>
         <div class='isdel' v-if='isdel'>
           you sure?
           <a class='fa fa-check' @click='del()' />
@@ -45,16 +45,25 @@ export default {
       isshow: true,
       tlin: this.lin,
       ishlight: 0,
-      gconf: this.$store.state.conf
+      gconf: this.$store.state.conf,
+      box: 0
     }
   },
   created() {
     this.$bus.on('new' + this.tlin.id, this.donew)
     this.$bus.on('edit' + this.tlin.id, this.doedit)
     this.$bus.on('del' + this.tlin.id, this.dodel)
+    this.$bus.on('boxed' + this.tlin.id, this.setbox)
     this.$bus.on('withtik', this.withtik)
   },
   methods: {
+    setbox(isbox) {
+      this.box = isbox
+    },
+    // type: show/light
+    sendbox(type) {
+      this.$bus.emit(type + 'box' + this.tlin.id)
+    },
     showlins() {
       if (this.tlin.ct > 0 && this.tlin.Child == null) {
         this.getlins()
@@ -63,6 +72,18 @@ export default {
     },
     refresh() {
       this.tlin.Child = null
+      // this.getlins()
+      this.getel()
+    },
+    getel() {
+      var that = this
+      req.post(this.gconf, 'el', { id: this.tlin.id }).then((res) => {
+        console.log('fetching el')
+        console.log(res.data)
+        that.tlin = res.data
+      })
+      console.log(length(that.tlin.tikc))
+      console.log(length(this.tlin.tikc))
       this.getlins()
     },
     getlins() {
@@ -104,14 +125,9 @@ export default {
       var i = this.tlin.Child.map((item) => item.id).indexOf(id)
       this.tlin.Child.splice(i, 1)
     },
-    showbtn() {
-      this.isbtn = true
-    },
-    hidebtn() {
-      this.isbtn = false
-    },
-    toggledel() {
-      this.isdel = !this.isdel
+    mouseInOut() {
+      this.isbtn = !this.isbtn
+      this.sendbox('light')
     },
     withtik(tik) {
       if (tik === -1) {

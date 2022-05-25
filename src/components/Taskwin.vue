@@ -66,10 +66,12 @@ export default {
   background-color gray
 .tikname0
   color gray
+//green
 .tik1
-  background-color green
+  background-color #00d944
 .tikname1
-  color green
+  color #00d944
+//red
 .tik2
   background-color red
 .tikname2

@@ -50,13 +50,13 @@ export default {
       var cpuR = []
       var that = this
       this.$ipc.on('addcpudata', function(event, data) {
+        var date = new Date();
+        cpuT.push([date.getHours(), date.getMinutes(), date.getSeconds()].join(':'))
+        cpuR.push(data)
         if (cpuT.length > wathchpoint) {
           cpuT.shift()
           cpuR.shift()
         }
-        var date = new Date();
-        cpuT.push([date.getHours(), date.getMinutes(), date.getSeconds()].join(':'))
-        cpuR.push(data)
         that.cpuChart.setOption({
           xAxis: {
             data: cpuT
