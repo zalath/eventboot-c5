@@ -8,8 +8,8 @@
       <div class="menuline">
         <div :class="[page==1?'on':'',' menubtn']" @click="page=1">[t]ask</div>
         <div :class="[page==2?'on':'',' menubtn']" @click="page=2">[s]tarter</div>
-        <div :class="[page==3?'on':'',' menubtn']" @click="page=3">con[f]</div>
         <div :class="[page==4?'on':'',' menubtn']" @click="page=4">t[q]ol</div>
+        <div :class="[page==3?'on':'',' menubtn']" @click="page=3">conf</div>
         <div class="menubtn" @click="boot()">&gt;boot</div>
         <div class="menubtn" v-for="(m,id) in menu" :key="id" @click="handle(m.url)">&gt;{{m.name}}</div>
         <div class="menubtn" @click="shut()">&gt;shut</div>

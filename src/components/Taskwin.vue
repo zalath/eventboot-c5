@@ -1,26 +1,28 @@
 <template>
   <div class='space'>
-    <div>
+    <div class="btns">
       <a class='tik tikall' @click='withtik(-1)' />
       <a class='tik tik0' @click='withtik(0)' />
       <a class='tik tik1' @click='withtik(1)' />
       <a class='tik tik2' @click='withtik(2)' />
-      <a class='tik fa fa-plus' @click='add()' />
+      <a class='fa fa-search' @click='opensearch()' />
     </div>
-    <!-- <Taskline v-for='(lin) in lins' :lin='lin' :key='lin.id'/> -->
-    <Taskline v-if="dataready" :lin='lin' :key='lin.id'/>
+    <searchpad></searchpad>
+    <taskline v-if="dataready" :lin='lin' :key='lin.id'/>
   </div>
 </template>
 <script>
-import Taskline from './Taskline';
+import taskline from './Taskline';
 import req from '../js/req';
+import searchpad from './Task_search_pad';
 export default {
   name: 'Taskwin',
   props: {
     title: String
   },
   components: {
-    Taskline
+    taskline,
+    searchpad
   },
   data: function() {
     return {
@@ -30,9 +32,6 @@ export default {
   },
   created: function() {
     this.getlins();
-    this.$bus.on('new0', this.donew)
-    this.$bus.on('edit0', this.doedit)
-    this.$bus.on('del0', this.dodel)
   },
   methods: {
     getlins() {
@@ -40,9 +39,7 @@ export default {
       req.post(this.$store.state.conf, 'el', { id: 0 }).then((res) => {
         that.lin = res.data;
         req.post(this.$store.state.conf, 'list', { id: 0 }).then((res) => {
-          that.lin.Child = res.data;
-          console.log(res.data)
-          // console.log(that.lin)
+          that.lin.Child = res.data
           that.dataready = true
         });
       });
@@ -50,23 +47,23 @@ export default {
     withtik(tik) {
       this.$bus.emit('withtik', tik);
     },
-    add() {
-      this.$bus.emit('new', {pid: 0})
-    },
-    donew(da) {
-      this.lins.push(da)
-    },
-    doedit(da) {
-      var i = this.lins.map((item) => item.id).indexOf(da.id)
-      this.lins[i] = da
-    },
-    dodel(id) {
-      var i = this.lins.map((item) => item.id).indexOf(id)
-      this.lins.splice(i, 1)
+    opensearch() {
     }
   }
 }
 </script>
+<style lang="stylus" scoped>
+a
+  margin-left 10px
+a
+  &:hover {
+    width 20px
+    height 20px
+    font-size 25px
+  }
+.btns
+  line-height 30px
+</style>
 <style lang="stylus">
 .tik0
   background-color gray
@@ -88,7 +85,6 @@ export default {
   width 10px
   height 10px
   display inline-block
-  margin-left 5px
   border-bottom-right-radius 50%
   border-top-right-radius 50%
   border-bottom-left-radius 50%

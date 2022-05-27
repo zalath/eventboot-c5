@@ -54,6 +54,9 @@ export default {
     }
   },
   created() {
+    if (this.tlin.pid === -1) {
+      this.showchild = true
+    }
     this.$bus.on('new' + this.tlin.id, this.donew)
     this.$bus.on('edit' + this.tlin.id, this.doedit)
     this.$bus.on('del' + this.tlin.id, this.dodel)
