@@ -7,7 +7,8 @@
       <a class='tik tik2' @click='withtik(2)' />
       <a class='tik fa fa-plus' @click='add()' />
     </div>
-    <Taskline v-for='(lin) in lins' :lin='lin' :key='lin.id'/>
+    <!-- <Taskline v-for='(lin) in lins' :lin='lin' :key='lin.id'/> -->
+    <Taskline v-if="dataready" :lin='lin' :key='lin.id'/>
   </div>
 </template>
 <script>
@@ -23,8 +24,8 @@ export default {
   },
   data: function() {
     return {
-      pid: 0,
-      lins: {}
+      lin: {},
+      dataready: false
     }
   },
   created: function() {
@@ -35,10 +36,15 @@ export default {
   },
   methods: {
     getlins() {
-      // console.log(this.pid);
-      req.post(this.$store.state.conf, 'list', { id: this.pid }).then((res) => {
-        // console.log(res)
-        this.lins = res.data;
+      var that = this
+      req.post(this.$store.state.conf, 'el', { id: 0 }).then((res) => {
+        that.lin = res.data;
+        req.post(this.$store.state.conf, 'list', { id: 0 }).then((res) => {
+          that.lin.Child = res.data;
+          console.log(res.data)
+          // console.log(that.lin)
+          that.dataready = true
+        });
       });
     },
     withtik(tik) {
@@ -66,12 +72,10 @@ export default {
   background-color gray
 .tikname0
   color gray
-//green
 .tik1
   background-color #00d944
 .tikname1
   color #00d944
-//red
 .tik2
   background-color red
 .tikname2

@@ -33,6 +33,10 @@ export default {
       title: ''
     };
   },
+  created() {
+    this.$bus.on('edit', this.edit);
+    this.$bus.on('new', this.new);
+  },
   methods: {
     addpic() {
 
@@ -82,10 +86,6 @@ export default {
     close() {
       this.isshow = false;
     }
-  },
-  created() {
-    this.$bus.on('edit', this.edit);
-    this.$bus.on('new', this.new);
   }
 };
 </script>
