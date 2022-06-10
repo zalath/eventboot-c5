@@ -141,6 +141,9 @@ a
 .cmt
   margin-left 30px
   color #999
+  word-break break-all
+  word-wrap break-word
+  white-space pre-wrap
 .isdel
   display inline-block
 .fblack

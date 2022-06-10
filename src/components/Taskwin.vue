@@ -48,6 +48,7 @@ export default {
       this.$bus.emit('withtik', tik);
     },
     opensearch() {
+      this.$bus.emit('showsearch');
     }
   }
 }
@@ -63,6 +64,8 @@ a
   }
 .btns
   line-height 30px
+.space
+  position relative
 </style>
 <style lang="stylus">
 .tik0

@@ -109,6 +109,7 @@ export default {
   border-bottom solid 1px red
   background-color black
   color aqua
+  outline none
 .piclistbox
   line-height 100px
 .picadd

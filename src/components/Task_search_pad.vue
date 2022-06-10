@@ -1,15 +1,19 @@
 <template>
-  <div class='space'>
+  <div class='searchspace' v-if="showsearch">
     <div class="searchbar">
-      <input type="text" v-model="searchval" />
-      <a class='fa fa-search' @click='search()' />
+      <input class="fs30" type="text" v-model="searchval" />
+      <a class='fs30 fa fa-search' @click='search()' />
     </div>
+    <a class="fs25 fa fa-refresh" @click="reset()"></a>
+    &emsp;
+    <a class="fs30 fa fa-times" @click="toshowsearch()"></a>
     <taskline v-for="(lin) in lins" :lin='lin' :key='lin.id'/>
   </div>
 </template>
 <script>
 import taskline from './Taskline';
 import req from '../js/req';
+// import { tSThisType } from '@babel/types';
 export default {
   name: 'searchpad',
   props: {
@@ -21,30 +25,59 @@ export default {
   data: function() {
     return {
       lins: {},
-      searchval: ''
+      searchval: '',
+      showsearch: false
     }
   },
   created: function() {
+    this.$bus.on('showsearch', this.toshowsearch)
   },
   methods: {
+    toshowsearch() {
+      this.showsearch = !this.showsearch
+    },
     search() {
       this.lins = {}
+      // var that = tSThisType
       var that = this
-      console.log(this.searchval)
       if (this.searchval === '') {
         console.log('err')
         return
       }
       req.post(this.$store.state.conf, 'find', { key: this.searchval}).then((res) => {
-        console.log('searching')
         that.lins = res.data
-        console.log(res.data)
       })
+    },
+    reset() {
+      this.lins = []
+      this.searchval = ''
     }
   }
 }
 </script>
 <style lang="stylus" scoped>
-.space
+.searchspace
   position absolute
+  width: 90%;
+  background-color: black;
+  z-index: 10;
+  text-align center
+  padding 3%
+  border solid 1px red
+.searchbar
+  width 100%
+.searchbar input
+  width 90%
+  display inline-block
+  border none
+  border-bottom solid 1px red
+  background-color black
+  color aqua
+  outline none
+.fs30
+  font-size 30px
+.fs25
+  font-size 25px
+.fa-search
+  display inline-block
 </style>
