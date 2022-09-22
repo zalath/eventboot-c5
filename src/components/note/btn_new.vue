@@ -2,9 +2,8 @@
   <a class='fa fa-plus' @click='newl()'></a>
 </template>
 <script>
-// import req from '../js/req'
 export default {
-  name: 'Taskline_btn_new',
+  name: 'btn_new',
   props: {
     lin: {}
   },
@@ -15,7 +14,7 @@ export default {
   },
   methods: {
     newl() {
-      this.$bus.emit('new', { pid: this.tlin.id })
+      this.$bus.emit('nnew', { pid: this.tlin.id })
     }
   }
 }

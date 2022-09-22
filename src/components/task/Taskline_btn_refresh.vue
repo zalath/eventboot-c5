@@ -2,7 +2,7 @@
   <a class='fa fa-refresh' @click='refresh()'></a>
 </template>
 <script>
-import req from '../js/req'
+import req from '../../js/req'
 export default {
   name: 'Taskline_btn_tik',
   props: {

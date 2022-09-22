@@ -19,19 +19,19 @@
       <pre class='cmt' v-if='tlin.cmt != ""'>{{ tlin.cmt }}</pre>
     </div>
     <div v-if='showchild'>
-      <Taskline v-for='li in tlin.Child' :lin='li' :key='li.id' />
+      <noteline v-for='li in tlin.Child' :lin='li' :key='li.id' />
     </div>
   </div>
 </template>
 <script>
-import req from '../js/req';
-import btntik from './Taskline_btn_tik';
-import btnnew from './Taskline_btn_new';
-import btnedit from './Taskline_btn_edit';
-import btndel from './Taskline_btn_del';
-import btnrefresh from './Taskline_btn_refresh';
+import req from '../../js/req';
+import btntik from './btn_tik';
+import btnnew from './btn_new';
+import btnedit from './btn_edit';
+import btndel from './btn_del';
+import btnrefresh from './btn_refresh';
 export default {
-  name: 'Taskline',
+  name: 'noteline',
   components: {
     btntik,
     btnnew,
@@ -57,12 +57,12 @@ export default {
     if (this.tlin.pid === -1) {
       this.showchild = true
     }
-    this.$bus.on('new' + this.tlin.id, this.donew)
-    this.$bus.on('edit' + this.tlin.id, this.doedit)
-    this.$bus.on('del' + this.tlin.id, this.dodel)
-    this.$bus.on('refreshel' + this.tlin.id, this.refreshel)
-    this.$bus.on('withtik', this.withtik)
-    this.$bus.on('boxed' + this.tlin.id, this.setbox)
+    this.$bus.on('nnew' + this.tlin.id, this.donew)
+    this.$bus.on('nedit' + this.tlin.id, this.doedit)
+    this.$bus.on('ndel' + this.tlin.id, this.dodel)
+    this.$bus.on('nrefreshel' + this.tlin.id, this.refreshel)
+    this.$bus.on('nwithtik', this.withtik)
+    this.$bus.on('nboxed' + this.tlin.id, this.setbox)
   },
   methods: {
     setbox(isbox) {
@@ -88,9 +88,9 @@ export default {
     },
     getlins() {
       var that = this
-      req.post(this.gconf, 'list', { id: this.tlin.id }).then((res) => {
+      req.post(this.gconf, 'nlist', { id: this.tlin.id }).then((res) => {
         res.type = 'child'
-        that.$bus.emit('refreshel' + that.tlin.id, res)
+        that.$bus.emit('nrefreshel' + that.tlin.id, res)
       })
     },
     donew(da) {

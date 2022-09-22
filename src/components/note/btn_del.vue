@@ -8,9 +8,9 @@
   </i>
 </template>
 <script>
-import req from '../js/req'
+import req from '../../js/req'
 export default {
-  name: 'Taskline_btn_del',
+  name: 'btn_del',
   props: {
     lin: {}
   },
@@ -23,9 +23,9 @@ export default {
   },
   methods: {
     del() {
-      req.post(this.gconf, 'del', { id: this.tlin.id }).then((res) => {
+      req.post(this.gconf, 'ndel', { id: this.tlin.id }).then((res) => {
         if (res.data === 'done') {
-          this.$bus.emit('del' + this.tlin.pid, { id: this.tlin.id, tik: this.tlin.tik})
+          this.$bus.emit('ndel' + this.tlin.pid, { id: this.tlin.id, tik: this.tlin.tik})
         }
       })
     }

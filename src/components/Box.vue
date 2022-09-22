@@ -7,6 +7,7 @@
       <!-- <div class="movebox"></div> -->
       <div class="menuline">
         <div :class="[page==1?'on':'',' menubtn']" @click="page=1">[t]ask</div>
+        <div :class="[page==6?'on':'',' menubtn']" @click="page=6">note</div>
         <div :class="[page==2?'on':'',' menubtn']" @click="page=2">[s]tarter</div>
         <div :class="[page==4?'on':'',' menubtn']" @click="page=4">t[q]ol</div>
         <div :class="[page==3?'on':'',' menubtn']" @click="page=3">conf</div>
@@ -21,21 +22,27 @@
       <Conf v-show="page === 3"/>
       <Tool v-show="page === 4"/>
       <!-- <Watcher v-show="page === 5"/> -->
+      <Note v-show="page === 6"/>
     </div>
+    <popcheck></popcheck>
   </div>
 </template>
 <script>
-import Task from './Task'
+import Task from './task/Task'
 import Starter from './Starter'
 import Conf from './Conf'
 import Tool from './Tool'
+import popcheck from './popup/check'
+import Note from './note/Note'
 // import Watcher from './Watcher'
 export default {
   components: {
     Task,
     Starter,
     Conf,
-    Tool
+    Tool,
+    popcheck,
+    Note
     // ,Watcher
   },
   name: 'Box',

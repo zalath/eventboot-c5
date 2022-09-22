@@ -2,7 +2,6 @@
   <a class='fa fa-pencil' @click='edit()'></a>
 </template>
 <script>
-// import req from '../js/req'
 export default {
   name: 'Taskline_btn_edit',
   props: {

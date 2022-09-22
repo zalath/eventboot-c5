@@ -72,7 +72,7 @@ export default {
       this.initstarter(this.$store.state.conf)
     }
     this.$ipc.on('confsaved', (event, e) => {
-      alert('saved');
+      this.$bus.emit('popupcheck')
     })
   },
   computed: {

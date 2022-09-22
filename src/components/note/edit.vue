@@ -22,9 +22,9 @@
   </div>
 </template>
 <script>
-import req from '../js/req';
+import req from '../../js/req';
 export default {
-  name: 'Taskedit',
+  name: 'edit',
   data: function () {
     return {
       isshow: false,
@@ -34,8 +34,8 @@ export default {
     };
   },
   created() {
-    this.$bus.on('edit', this.edit);
-    this.$bus.on('new', this.new);
+    this.$bus.on('nedit', this.edit);
+    this.$bus.on('nnew', this.new);
   },
   methods: {
     addpic() {
@@ -50,20 +50,20 @@ export default {
       this.close();
     },
     doedit() {
-      req.post(this.$store.state.conf, 'save', this.lin).then((res) => {
+      req.post(this.$store.state.conf, 'nsave', this.lin).then((res) => {
         if (res === 'done') {
-          this.$bus.emit('edit', this.lin);
+          this.$bus.emit('nedit', this.lin);
         }
       });
     },
     donew() {
       this.lin.pid = this.pid;
-      req.post(this.$store.state.conf, 'new', this.lin).then((res) => {
+      req.post(this.$store.state.conf, 'nnew', this.lin).then((res) => {
         if (res.data !== 'mis') {
-          req.post(this.$store.state.conf, 'el', { id: res.data }).then((res) => {
+          req.post(this.$store.state.conf, 'nel', { id: res.data }).then((res) => {
             if (res.status) {
               console.log(res.data);
-              this.$bus.emit('new' + this.pid, res.data);
+              this.$bus.emit('nnew' + this.pid, res.data);
             }
           });
         }

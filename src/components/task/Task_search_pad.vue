@@ -1,6 +1,6 @@
 <template>
-  <div class='searchspace' v-if="showsearch">
-    <div class="searchbar">
+  <div class='space' v-if="showsearch">
+    <div class="inputbar">
       <input class="fs30" type="text" v-model="searchval" />
       <a class='fs30 fa fa-search' @click='search()' />
     </div>
@@ -12,7 +12,7 @@
 </template>
 <script>
 import taskline from './Taskline';
-import req from '../js/req';
+import req from '../../js/req';
 // import { tSThisType } from '@babel/types';
 export default {
   name: 'searchpad',
@@ -56,17 +56,17 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.searchspace
+.space
   position absolute
-  width: 90%;
-  background-color: black;
-  z-index: 10;
+  width 90%
+  background-color black
+  z-index 10
   text-align center
   padding 3%
   border solid 1px red
-.searchbar
+.inputbar
   width 100%
-.searchbar input
+.inputbar input
   width 90%
   display inline-block
   border none

@@ -6,15 +6,18 @@
       <a class='tik tik1' @click='withtik(1)' />
       <a class='tik tik2' @click='withtik(2)' />
       <a class='fa fa-search' @click='opensearch()' />
+      <a class='fa fa-terminal' @click='showsetapi()' />
     </div>
     <searchpad></searchpad>
+    <setapi></setapi>
     <taskline v-if="dataready" :lin='lin' :key='lin.id'/>
   </div>
 </template>
 <script>
 import taskline from './Taskline';
-import req from '../js/req';
+import req from '../../js/req';
 import searchpad from './Task_search_pad';
+import setapi from '../Data_api';
 export default {
   name: 'Taskwin',
   props: {
@@ -22,7 +25,8 @@ export default {
   },
   components: {
     taskline,
-    searchpad
+    searchpad,
+    setapi
   },
   data: function() {
     return {
@@ -32,6 +36,7 @@ export default {
   },
   created: function() {
     this.getlins();
+    this.$bus.on('taskreload', this.getlins)
   },
   methods: {
     getlins() {
@@ -42,13 +47,19 @@ export default {
           that.lin.Child = res.data
           that.dataready = true
         });
+      }).catch(function(error) {
+        console.log(error)
+        that.$bus.emit('showsetapi', true)
       });
     },
     withtik(tik) {
-      this.$bus.emit('withtik', tik);
+      this.$bus.emit('withtik', tik)
     },
     opensearch() {
-      this.$bus.emit('showsearch');
+      this.$bus.emit('showsearch')
+    },
+    showsetapi() {
+      this.$bus.emit('showsetapi')
     }
   }
 }
