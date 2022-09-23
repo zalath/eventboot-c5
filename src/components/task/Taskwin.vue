@@ -9,7 +9,6 @@
       <a class='fa fa-terminal' @click='showsetapi()' />
     </div>
     <searchpad></searchpad>
-    <setapi></setapi>
     <taskline v-if="dataready" :lin='lin' :key='lin.id'/>
   </div>
 </template>
@@ -17,7 +16,6 @@
 import taskline from './Taskline';
 import req from '../../js/req';
 import searchpad from './Task_search_pad';
-import setapi from '../Data_api';
 export default {
   name: 'Taskwin',
   props: {
@@ -25,8 +23,7 @@ export default {
   },
   components: {
     taskline,
-    searchpad,
-    setapi
+    searchpad
   },
   data: function() {
     return {

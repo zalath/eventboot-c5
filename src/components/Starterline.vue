@@ -6,6 +6,9 @@
         <div class="linename">{{line.name}}</div>
       </div>
     </div>
+    <div class="stline" @click="bash(line.path)">
+      <div class="line">&emsp;>>></div>
+    </div>
   </div>
 </template>
 <script>
@@ -28,6 +31,9 @@ export default {
     },
     openFolder: function(path) {
       this.$ipc.send('openFolder', path)
+    },
+    bash: function(path) {
+      this.$ipc.send('openbash', path)
     }
   },
   created() {

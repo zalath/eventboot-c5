@@ -16,7 +16,7 @@ export default {
   data: function() {
     return {
       showsetapi: false,
-      apiurl: 'http://192.168.',
+      apiurl: 'http://192.168.2.',
       apiport: ':10488'
     }
   },

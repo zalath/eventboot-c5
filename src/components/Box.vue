@@ -24,7 +24,8 @@
       <!-- <Watcher v-show="page === 5"/> -->
       <Note v-show="page === 6"/>
     </div>
-    <popcheck></popcheck>
+    <Setapi/>
+    <popcheck/>
   </div>
 </template>
 <script>
@@ -34,6 +35,7 @@ import Conf from './Conf'
 import Tool from './Tool'
 import popcheck from './popup/check'
 import Note from './note/Note'
+import Setapi from './Dataapi'
 // import Watcher from './Watcher'
 export default {
   components: {
@@ -42,7 +44,8 @@ export default {
     Conf,
     Tool,
     popcheck,
-    Note
+    Note,
+    Setapi
     // ,Watcher
   },
   name: 'Box',

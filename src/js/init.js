@@ -49,6 +49,9 @@ init.initipc = function (win, ipc, shell, app) {
     var path = args.replace(/\//g, '\\');
     exec('explorer ' + path, {});
   })
+  ipc.on('openbash', function (event, args) {
+    exec('"C:/Program Files/Git/git-bash.exe" --cd=' + args, {})
+  })
   ipc.on('stt', function(event, args) {
     init.bootOne()
   })

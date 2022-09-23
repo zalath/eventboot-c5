@@ -9,6 +9,14 @@
       <p v-if="title === 'new'">comment</p>
       <textarea class="input" rows="9" v-model="lin.cmt" />
     </div>
+    <div class="contentbox">
+      <p v-if="title === 'new'">content</p>
+      <div class="content editpart">
+        <textarea class="input" rows="12" v-model="lin.content" @change="rendertxt($event, lin.content)"/>
+      </div>
+      <div class="content showpart" v-html="re"></div>
+    </div>
+    <div class="cb"></div>
     <div class="piclistbox">
       <div class="piclist">
         <img src=""/>
@@ -30,7 +38,8 @@ export default {
       isshow: false,
       pid: '',
       lin: {},
-      title: ''
+      title: '',
+      re: ''
     };
   },
   created() {
@@ -38,6 +47,14 @@ export default {
     this.$bus.on('nnew', this.new);
   },
   methods: {
+    rendertxt(event, txt) {
+      this.tomarkdown(txt)
+    },
+    tomarkdown(txt) {
+      console.log(txt)
+      var mdi = require('markdown-it')()
+      this.re = mdi.render(txt);
+    },
     addpic() {
 
     },
@@ -72,11 +89,14 @@ export default {
     edit(da) {
       this.lin = da.lin;
       this.pid = da.lin.pid;
+      this.tomarkdown(this.lin.content)
+      console.log(this.lin)
       this.show('edit');
     },
     new(da) {
       this.pid = da.pid;
       this.lin = {};
+      this.tomarkdown('')
       this.show('new');
     },
     show(title) {
@@ -122,4 +142,10 @@ export default {
   &:hover
     background-color red
     color black
+.contentbox
+  position relative
+.content
+  position absolute
+.cb
+  clear both
 </style>

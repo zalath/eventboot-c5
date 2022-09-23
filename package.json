@@ -1,5 +1,5 @@
 {
-  "author":"zalath",
+  "author": "zalath",
   "description": "tool",
   "name": "c5",
   "version": "0.1.0",
@@ -23,6 +23,7 @@
     "font-awesome": "^4.7.0",
     "js-base64": "^3.6.1",
     "js-md5": "^0.7.3",
+    "markdown-it": "^13.0.1",
     "mitt": "^3.0.0",
     "qrcodejs2": "0.0.2",
     "vue": "^3.0.0",
