@@ -3,20 +3,19 @@
     <h1>{{ title }}</h1>
     <div>
       <p v-if="title === 'new'">title</p>
-      <textarea class="input" rows="4" v-model="lin.title" />
+      <textarea class="input" rows="2" v-model="lin.title" />
     </div>
     <div>
       <p v-if="title === 'new'">comment</p>
-      <textarea class="input" rows="9" v-model="lin.cmt" />
+      <textarea class="input" rows="2" v-model="lin.cmt" />
     </div>
     <div class="contentbox">
       <p v-if="title === 'new'">content</p>
-      <div class="content editpart">
-        <textarea class="input" rows="12" v-model="lin.content" @change="rendertxt($event, lin.content)"/>
+      <div :class="'content editpart '+editcontent">
+        <textarea class="input" rows="20" v-model="lin.content" @contextmenu="contentswitch()" @change="rendertxt($event, lin.content)"/>
       </div>
-      <div class="content showpart" v-html="re"></div>
+      <div :class="'content showpart '+showcontent" @contextmenu="contentswitch()" v-html="re"></div>
     </div>
-    <div class="cb"></div>
     <div class="piclistbox">
       <div class="piclist">
         <img src=""/>
@@ -39,7 +38,9 @@ export default {
       pid: '',
       lin: {},
       title: '',
-      re: ''
+      re: '',
+      editcontent: 'hide',
+      showcontent: ''
     };
   },
   created() {
@@ -105,6 +106,10 @@ export default {
     },
     close() {
       this.isshow = false;
+    },
+    contentswitch() {
+      this.editcontent = this.editcontent === 'hide' ? '' : 'hide'
+      this.showcontent = this.showcontent === 'hide' ? '' : 'hide'
     }
   }
 };
@@ -112,13 +117,14 @@ export default {
 <style scoped lang="stylus">
 .edit
   position fixed
-  top 20px
-  left 25%
+  top 50%
+  left 50%
+  transform translate(-50%,-50%)
   background-color black
   border solid 1px red
-  width 50%
+  width 80%
   text-align left
-  overflow hidden
+  overflow-y scroll
   padding 20px
 .btns
   float right
@@ -138,14 +144,20 @@ export default {
   width 15px
   height 15px
   text-align center
-  border-radius 3px
   &:hover
     background-color red
     color black
 .contentbox
+  height 20rem
   position relative
 .content
+  width 100%
+  height 100%
   position absolute
+.showpart
+  overflow-y: scroll
 .cb
   clear both
+.hide
+  display none
 </style>

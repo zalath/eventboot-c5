@@ -51,7 +51,7 @@ export default {
   name: 'Box',
   data: function() {
     return {
-      page: 1,
+      page: 6,
       menu: []
     }
   },
@@ -168,14 +168,26 @@ div
 div::-webkit-scrollbar-track
   -webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.3)
   background-color #000
-
 div::-webkit-scrollbar
   width 10px
   background-color #000
-
 div::-webkit-scrollbar-thumb
   background-color red
-  background-image -webkit-gradient(linear, 0 0, 0 10%,
-    color-stop(.5, rgba(255, 255, 255, .2)),
-    color-stop(.5, transparent), to(transparent))
+div::-webkit-scrollbar-corner
+  background-color red
+dev::-webkit-resizer
+  background-color #000
+  border solid 1px red
+
+textarea::-webkit-scrollbar-track
+  -webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.3)
+  background-color #000
+textarea::-webkit-scrollbar
+  width 10px
+  background-color #000
+textarea::-webkit-scrollbar-thumb
+  background-color red
+textarea::-webkit-resizer
+  background-color #000
+  border solid 1px red
 </style>

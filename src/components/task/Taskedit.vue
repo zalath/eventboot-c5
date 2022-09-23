@@ -92,8 +92,9 @@ export default {
 <style scoped lang="stylus">
 .edit
   position fixed
-  top 20px
-  left 25%
+  top 50%
+  left 50%
+  transform translate(-50%,-50%)
   background-color black
   border solid 1px red
   width 50%
