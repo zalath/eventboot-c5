@@ -16,12 +16,7 @@
       </div>
       <div :class="'content showpart '+showcontent" @contextmenu="contentswitch()" v-html="re"></div>
     </div>
-    <div class="piclistbox">
-      <div class="piclist">
-        <img src=""/>
-      </div>
-      <div class="picadd fa fa-plus" v-on:click="addpic()"></div>
-    </div>
+    <file :lin="lin"/>
     <div class="btns">
       <h4 class="fa fa-check" v-on:click="submit()" />
       <h4 class="fa fa-times" v-on:click="close()" />
@@ -30,8 +25,12 @@
 </template>
 <script>
 import req from '../../js/req';
+import file from '../File';
 export default {
   name: 'edit',
+  components: {
+    file
+  },
   data: function () {
     return {
       isshow: false,
@@ -55,9 +54,6 @@ export default {
       console.log(txt)
       var mdi = require('markdown-it')()
       this.re = mdi.render(txt);
-    },
-    addpic() {
-
     },
     submit() {
       if (this.title === 'edit') {
@@ -136,17 +132,6 @@ export default {
   background-color black
   color aqua
   outline none
-.piclistbox
-  line-height 100px
-.picadd
-  border solid 1px red
-  padding 3px
-  width 15px
-  height 15px
-  text-align center
-  &:hover
-    background-color red
-    color black
 .contentbox
   height 20rem
   position relative
@@ -155,6 +140,7 @@ export default {
   height 100%
   position absolute
 .showpart
+  border-bottom solid 1px red
   overflow-y: scroll
 .cb
   clear both
