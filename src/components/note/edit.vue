@@ -51,7 +51,6 @@ export default {
       this.tomarkdown(txt)
     },
     tomarkdown(txt) {
-      console.log(txt)
       var mdi = require('markdown-it')()
       this.re = mdi.render(txt);
     },
@@ -87,7 +86,6 @@ export default {
       this.lin = da.lin;
       this.pid = da.lin.pid;
       this.tomarkdown(this.lin.content)
-      console.log(this.lin)
       this.show('edit');
     },
     new(da) {

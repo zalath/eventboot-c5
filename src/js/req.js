@@ -8,5 +8,10 @@ export default {
     return axios.post(conf.conf.api + url, qs.stringify(data), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
+  },
+  upload: function(conf, url, data) {
+    return axios.post(conf.conf.api + url, data, {
+      headers: { 'Content-Type': 'multipart/form-data'}
+    });
   }
 };
