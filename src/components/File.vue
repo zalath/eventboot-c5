@@ -38,10 +38,14 @@ export default {
       baseurl: '',
       flin: {},
       refreshindex: false,
-      newindex: 0
+      refreshtype: '',
+      newindex: 0,
+      fin: 0
     }
   },
   created: function() {
+    this.t('reg file')
+    this.t(this.fin)
     this.$bus.on('editdone', this.confirm)
     this.flin = this.lin
     this.filelist = this.flin.file && this.flin.file !== '' ? this.flin.file.split(',') : []
@@ -54,10 +58,8 @@ export default {
   methods: {
     confirm(nlin) {
       this.tlin = nlin
-      console.log('indone------------------------------')
-      console.log(this.filelist)
-      console.log(this.files)
-      console.log(this.fileshow)
+      this.t('in done------------------------------')
+      this.t(this.files)
       for (var i in this.files) {
         if (this.files[i] === 'del') {
           this.toDel(i)
@@ -65,12 +67,13 @@ export default {
           this.toUpload(i)
         } else {
           this.toDel(i)
-          this.toupload(i)
+          this.toUpload(i)
         }
       }
     },
     changeFile(i) {
       this.refreshindex = i
+      this.refreshtype = 'update'
       this.$refs.file.click()
     },
     delFile(i) {
@@ -78,12 +81,14 @@ export default {
     },
     addFile() {
       this.refreshindex = this.newindex
+      this.refreshtype = 'new'
       this.$refs.file.click()
-      this.newindex += 1
     },
     tempFile(event) {
       event.preventDefault()
       var file = this.$refs.file.files[0]
+      if (file === undefined) return
+      if (this.refreshtype === 'new') this.newindex += 1
       this.files[this.refreshindex] = file
       var img = new FileReader()
       img.readAsDataURL(file)
@@ -92,30 +97,39 @@ export default {
       }
     },
     toUpload(i) {
+      this.t('upload ing')
       var formData = new FormData()
       formData.append('file', this.files[i])
-      console.log(i)
+      this.t('uploading ' + i)
       req.upload(this.$store.state.conf, 'fupload', formData).then((res) => {
         if (res.status) {
           if (res.data !== 'mis') {
             this.filelist[i] = res.data
             this.fileshow[i] = this.baseurl + res.data
             this.files[i] = null
-            this.checkfin(i)
+            this.fin += 1
+            this.checkfin()
           }
         }
       })
     },
     toDel(i) {
+      this.t('del ing')
       var file = this.filelist[i]
-      console.log(i)
-      console.log(file)
-      if (file === undefined) return
+      this.t('del ' + i)
+      this.t('del ' + file)
+      if (file === undefined) {
+        this.filelist[i] = ''
+        this.fin += 1
+        this.checkfin()
+        return
+      }
       req.post(this.$store.state.conf, 'fdel', {del: file}).then((res) => {
         if (res.status) {
           if (res.data === 'done') {
             this.filelist[i] = ''
-            this.checkfin(i)
+            this.fin += 1
+            this.checkfin()
           }
         }
       })
@@ -124,28 +138,33 @@ export default {
       this.showbigpic = true
       this.bigpic = url
     },
-    checkfin(i) {
-      console.log('isfin---------------')
-      if (parseInt(i) + 1 === this.files.length && ['del', null].indexOf(this.files[i]) > -1) {
+    checkfin() {
+      this.t('isfin---------------' + this.fin)
+      if (this.fin === this.files.length) {
         this.saveNote()
       }
     },
     saveNote() {
-      console.log('saving file')
-      console.log(this.filelist)
+      this.t('saving file')
+      this.t(this.filelist)
+      this.t(this.files)
+      this.t(this.fileshow)
       for (var i in this.filelist) {
         if (this.filelist[i] === '') {
           this.filelist.splice(i, 1)
         }
       }
-      console.log(this.filelist)
+      this.t(this.filelist)
       this.flin.file = this.filelist.join(',')
-      console.log(this.flin.file)
+      this.t(this.flin.file)
       var cmd = 'save'
       if (this.filefrom === 'note') {
         cmd = 'nsave'
       }
       req.post(this.$store.state.conf, cmd, this.flin)
+    },
+    t(a) {
+      console.log(a)
     }
   }
 }
