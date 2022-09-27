@@ -7,7 +7,7 @@
       <!-- <div class="movebox"></div> -->
       <div class="menuline">
         <div :class="[page==1?'on':'',' menubtn']" @click="page=1">[t]ask</div>
-        <div :class="[page==6?'on':'',' menubtn']" @click="page=6">note</div>
+        <div :class="[page==6?'on':'',' menubtn']" @click="page=6">not[e]</div>
         <div :class="[page==2?'on':'',' menubtn']" @click="page=2">[s]tarter</div>
         <div :class="[page==4?'on':'',' menubtn']" @click="page=4">t[q]ol</div>
         <div :class="[page==3?'on':'',' menubtn']" @click="page=3">conf</div>

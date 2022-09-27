@@ -9,12 +9,7 @@
       <p v-if="title === 'new'">comment</p>
       <textarea class="input" rows="9" v-model="lin.cmt" />
     </div>
-    <div class="piclistbox">
-      <div class="piclist">
-        <img src=""/>
-      </div>
-      <div class="picadd fa fa-plus" v-on:click="addpic()"></div>
-    </div>
+    <file :lin="lin" :filefrom="'task'"/>
     <div class="btns">
       <h4 class="fa fa-check" v-on:click="submit()" />
       <h4 class="fa fa-times" v-on:click="close()" />
@@ -23,8 +18,12 @@
 </template>
 <script>
 import req from '../../js/req';
+import file from '../File.vue'
 export default {
   name: 'Taskedit',
+  components: {
+    file
+  },
   data: function () {
     return {
       isshow: false,
@@ -53,6 +52,7 @@ export default {
       req.post(this.$store.state.conf, 'save', this.lin).then((res) => {
         if (res === 'done') {
           this.$bus.emit('edit', this.lin);
+          this.$bus.emit('editdone')
         }
       });
     },
@@ -62,8 +62,8 @@ export default {
         if (res.data !== 'mis') {
           req.post(this.$store.state.conf, 'el', { id: res.data }).then((res) => {
             if (res.status) {
-              console.log(res.data);
               this.$bus.emit('new' + this.pid, res.data);
+              this.$bus.emit('editdone')
             }
           });
         }
@@ -99,7 +99,6 @@ export default {
   border solid 1px red
   width 50%
   text-align left
-  overflow hidden
   padding 20px
 .btns
   float right

@@ -1,15 +1,22 @@
 <template>
   <div class="filelistbox">
     <div class="filelist">
-      <div class="filebox" v-for="(file,index) in filelist" :key="index">
-        <img class="file" :src="baseurl+file"/>
+      <div class="filebox" v-for="(file,index) in fileshow" :key="index">
+        <div v-if="files[index] != 'del'">
+          <img class="file" @click="toBigpic(file)" :src="file"/>
+          <div>
+            <button class="fileboxbtn fa fa-refresh" @click="changeFile(index)" />
+            <button class="fileboxbtn fa fa-times" @click="delFile(index)"/>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="fileadd fa fa-plus" v-on:click="addpic()"></div>
-    <input type="file" ref="file" class="hide" @change="uploadfile($event)"/>
-    <div class="bigpicdisplay">
+    <div class="fileadd fa fa-plus" v-on:click="addFile()"></div>
+    <input type="file" ref="file" class="hide" @change="tempFile($event)"/>
+    <div class="bigpicdisplay" @click="showbigpic=false" v-if="showbigpic">
       <img :src="bigpic">
     </div>
+    <button @click="confirm()" value="click"/>
   </div>
 </template>
 
@@ -18,44 +25,127 @@ import req from '../js/req'
 export default {
   name: 'file',
   props: {
-    lin: {}
+    lin: {},
+    filefrom: String
   },
   data: function() {
     return {
       bigpic: '',
+      showbigpic: false,
       filelist: [],
+      fileshow: [],
+      files: [],
       baseurl: '',
-      flin: {}
+      flin: {},
+      refreshindex: false,
+      newindex: 0
     }
   },
   created: function() {
-    this.baseurl = this.$store.state.conf.conf.api
-    console.log(this.baseurl)
+    this.$bus.on('editdone', this.confirm)
     this.flin = this.lin
-    this.filelist = this.flin.file.split(',')
+    this.filelist = this.flin.file && this.flin.file !== '' ? this.flin.file.split(',') : []
+    this.baseurl = this.$store.state.conf.conf.api
+    for (var i in this.filelist) {
+      this.fileshow[i] = this.baseurl + this.filelist[i]
+    }
+    this.newindex = this.filelist.length
   },
   methods: {
-    addpic() {
+    confirm(nlin) {
+      this.tlin = nlin
+      console.log('indone------------------------------')
+      console.log(this.filelist)
+      console.log(this.files)
+      console.log(this.fileshow)
+      for (var i in this.files) {
+        if (this.files[i] === 'del') {
+          this.toDel(i)
+        } else if (!this.filelist[i]) {
+          this.toUpload(i)
+        } else {
+          this.toDel(i)
+          this.toupload(i)
+        }
+      }
+    },
+    changeFile(i) {
+      this.refreshindex = i
       this.$refs.file.click()
     },
-    uploadfile(event) {
-      event.preventDefault();
-      var formData = new FormData()
+    delFile(i) {
+      this.files[i] = 'del'
+    },
+    addFile() {
+      this.refreshindex = this.newindex
+      this.$refs.file.click()
+      this.newindex += 1
+    },
+    tempFile(event) {
+      event.preventDefault()
       var file = this.$refs.file.files[0]
-      formData.append('file', file)
-      console.log(this.lin.id)
+      this.files[this.refreshindex] = file
+      var img = new FileReader()
+      img.readAsDataURL(file)
+      img.onload = ({ target }) => {
+        this.fileshow[this.refreshindex] = target.result
+      }
+    },
+    toUpload(i) {
+      var formData = new FormData()
+      formData.append('file', this.files[i])
+      console.log(i)
       req.upload(this.$store.state.conf, 'fupload', formData).then((res) => {
         if (res.status) {
           if (res.data !== 'mis') {
-            this.filelist.push(res.data)
-            console.log(this.flin)
-            console.log(this.filelist)
-            this.flin.file = this.filelist.join(',')
-            console.log(this.flin.file)
-            req.post(this.$store.state.conf, 'nsave', this.flin)
+            this.filelist[i] = res.data
+            this.fileshow[i] = this.baseurl + res.data
+            this.files[i] = null
+            this.checkfin(i)
           }
         }
       })
+    },
+    toDel(i) {
+      var file = this.filelist[i]
+      console.log(i)
+      console.log(file)
+      if (file === undefined) return
+      req.post(this.$store.state.conf, 'fdel', {del: file}).then((res) => {
+        if (res.status) {
+          if (res.data === 'done') {
+            this.filelist[i] = ''
+            this.checkfin(i)
+          }
+        }
+      })
+    },
+    toBigpic(url) {
+      this.showbigpic = true
+      this.bigpic = url
+    },
+    checkfin(i) {
+      console.log('isfin---------------')
+      if (parseInt(i) + 1 === this.files.length && ['del', null].indexOf(this.files[i]) > -1) {
+        this.saveNote()
+      }
+    },
+    saveNote() {
+      console.log('saving file')
+      console.log(this.filelist)
+      for (var i in this.filelist) {
+        if (this.filelist[i] === '') {
+          this.filelist.splice(i, 1)
+        }
+      }
+      console.log(this.filelist)
+      this.flin.file = this.filelist.join(',')
+      console.log(this.flin.file)
+      var cmd = 'save'
+      if (this.filefrom === 'note') {
+        cmd = 'nsave'
+      }
+      req.post(this.$store.state.conf, cmd, this.flin)
     }
   }
 }
@@ -73,19 +163,29 @@ export default {
     color black
 .filebox
   display inline-block
-  height 6rem
   width 6rem
   transform rotate3d(40,-200,-20,55deg)
   transform-origin left
   margin-left -3rem
+  padding-top 1rem
+  &:hover
+    padding-top 0rem
+    .fileboxbtn{
+      display inline-block
+    }
 .file
   border solid 1px red
   height 6rem
   width 6rem
-  margin-top 1rem
+.fileboxbtn
+  display none
+  width 49%
+  background none
+  border solid 1px red
+  color red
   &:hover
-    margin-top 0rem
-    border-bottom solid 1rem rgba(0,0,0,0)
+    color white
+    background red
 .filelist
   margin-left 4rem
   height 8rem
@@ -95,4 +195,14 @@ export default {
   margin .5rem 0px
 .hide
   display none
+.bigpicdisplay
+  position fixed
+  top 50%
+  left 50%
+  transform translate(-50%,-50%)
+  border solid 1px red
+  border-bottom solid 6px red
+.bigpicdisplay img
+  max-width 50rem
+  max-height 50rem
 </style>

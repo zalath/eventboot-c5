@@ -16,7 +16,7 @@
       </div>
       <div :class="'content showpart '+showcontent" @contextmenu="contentswitch()" v-html="re"></div>
     </div>
-    <file :lin="lin"/>
+    <file :lin="lin" :filefrom="'note'"/>
     <div class="btns">
       <h4 class="fa fa-check" v-on:click="submit()" />
       <h4 class="fa fa-times" v-on:click="close()" />
@@ -63,9 +63,11 @@ export default {
       this.close();
     },
     doedit() {
+      console.log('saving')
       req.post(this.$store.state.conf, 'nsave', this.lin).then((res) => {
-        if (res === 'done') {
-          this.$bus.emit('nedit', this.lin);
+        console.log(res)
+        if (res.data === 'done') {
+          this.$bus.emit('editdone', this.lin)
         }
       });
     },
@@ -73,9 +75,10 @@ export default {
       this.lin.pid = this.pid;
       req.post(this.$store.state.conf, 'nnew', this.lin).then((res) => {
         if (res.data !== 'mis') {
+          this.lin.id = res.data
+          this.$bus.emit('editdone', this.lin)
           req.post(this.$store.state.conf, 'nel', { id: res.data }).then((res) => {
             if (res.status) {
-              console.log(res.data);
               this.$bus.emit('nnew' + this.pid, res.data);
             }
           });
@@ -93,6 +96,8 @@ export default {
       this.lin = {};
       this.tomarkdown('')
       this.show('new');
+      this.editcontent = ''
+      this.showcontent = 'hide'
     },
     show(title) {
       this.title = title;
@@ -118,7 +123,6 @@ export default {
   border solid 1px red
   width 80%
   text-align left
-  overflow-y scroll
   padding 20px
 .btns
   float right

@@ -44,6 +44,9 @@ async function createWindow () {
     if (input.control && input.key.toLocaleLowerCase() === 't') {
       win.webContents.send('setpage', 1);
     }
+    if (input.control && input.key.toLocaleLowerCase() === 'e') {
+      win.webContents.send('setpage', 6);
+    }
     if (input.control && input.key.toLocaleLowerCase() === 's') {
       win.webContents.send('setpage', 2);
     }
