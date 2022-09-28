@@ -2,8 +2,8 @@
   <div class="filelistbox">
     <div class="filelist">
       <div class="filebox" v-for="(file,index) in fileshow" :key="index">
-        <div v-if="files[index] != 'del'">
-          <img class="file" @click="toBigpic(file)" :src="file"/>
+        <div v-if="files[index] != 'del'" @mouseover="showname(index)" @mouseout="showname('')">
+          <img class="file" @click="toBigpic(index)" :src="file" @error="e => { e.target.src = blankimg }"/>
           <div>
             <button class="fileboxbtn fa fa-refresh" @click="changeFile(index)" />
             <button class="fileboxbtn fa fa-times" @click="delFile(index)"/>
@@ -11,16 +11,24 @@
         </div>
       </div>
     </div>
+    <div>
+      <div class="filename">&nbsp;{{filename}}</div>
+    </div>
     <div class="fileadd fa fa-plus" v-on:click="addFile()"></div>
     <input type="file" ref="file" class="hide" @change="tempFile($event)"/>
-    <div class="bigpicdisplay" @click="showbigpic=false" v-if="showbigpic">
-      <img :src="bigpic">
+    <div class="bigpicdisplay" v-if="bigpic.isshow">
+      <img :src="bigpic.pic" @click="bigpic.isshow=false" @error="e => { e.target.src = blankimg }">
+      <div class="bigpicfilename">
+        <span>&nbsp;{{bigpic.filename}}</span>
+        <button v-if="bigpic.isdownload" class="bigpicbtn fa fa-level-down" @click="download()" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import req from '../js/req'
+import blankimg from '../assets/blank.png'
 export default {
   name: 'file',
   props: {
@@ -29,12 +37,20 @@ export default {
   },
   data: function() {
     return {
-      bigpic: '',
-      showbigpic: false,
+      blankimg,
+      filename: '',
+      baseurl: '',
+      bigpic: {
+        filename: '',
+        pic: '',
+        isshow: false,
+        isdownload: true,
+        index: 0
+      },
+
       filelist: [],
       fileshow: [],
       files: [],
-      baseurl: '',
       flin: {},
       refreshindex: false,
       refreshfin: 0,
@@ -55,6 +71,34 @@ export default {
     this.newindex = this.filelist.length
   },
   methods: {
+    // 文件预览
+    toBigpic(i) {
+      this.bigpic.isshow = true
+      this.bigpic.pic = this.fileshow[i]
+      this.bigpic.filename = this.getfilename(i)
+      this.bigpic.isdownload = !(this.filelist[i] === undefined)
+      this.bigpic.index = i
+    },
+    showname(i) {
+      this.filename = this.getfilename(i)
+    },
+    getfilename(i) {
+      if (i === '') {
+        return ''
+      }
+      return this.filelist[i] === undefined ? this.files[i].name : this.filelist[i].substring(2)
+    },
+    download() {
+      var i = this.bigpic.index
+      var dE = document.createElement('a')
+      dE.href = this.filelist[i]
+      dE.download = this.getfilename(i)
+      document.body.append(dE)
+      dE.click()
+      document.body.removeChild(dE)
+    },
+    // end文件预览
+    // 文件操作
     changeFile(i) {
       this.refreshindex = i
       this.refreshtype = 'update'
@@ -144,10 +188,6 @@ export default {
         }
       })
     },
-    toBigpic(url) {
-      this.showbigpic = true
-      this.bigpic = url
-    },
     checkfin() {
       this.t('isfin-----------------------------')
       this.t(this.refreshfin + '--' + this.refreshmax)
@@ -172,9 +212,10 @@ export default {
       }
       req.post(this.$store.state.conf, cmd, this.flin)
     },
+    // end文件操作
     t(a, txt = '') {
-      // console.log('FILE::::' + txt)
-      // console.log(a)
+      console.log('FILE::::' + txt)
+      console.log(a)
     }
   }
 }
@@ -229,9 +270,34 @@ export default {
   top 50%
   left 50%
   transform translate(-50%,-50%)
-  border solid 1px red
-  border-bottom solid 6px red
+  color white
+  font-size 11px
+  line-height 1.5rem
+  text-align center
 .bigpicdisplay img
   max-width 50rem
   max-height 50rem
+  border solid 1px red
+.bigpicfilename
+  background red
+  padding 0px .5rem
+  &:hover
+    .bigpicbtn
+      display inline-block
+.bigpicbtn
+  display none
+  position absolute
+  right 0px
+  background red
+  border none
+  color white
+  font-size 1rem
+  padding 0px .7rem
+  line-height 1.5rem
+  clip-path polygon(0% 0%,70% 0%,100% 30%,100% 100%,35% 100%,0% 70%)
+  &:hover
+    background white
+    color red
+.filename
+  text-align center
 </style>
