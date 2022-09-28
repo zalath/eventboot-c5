@@ -67,7 +67,6 @@ export default {
     doedit() {
       console.log('saving')
       req.post(this.$store.state.conf, 'nsave', this.lin).then((res) => {
-        console.log(res)
         if (res.data === 'done') {
           this.$bus.emit('editdone', this.lin)
         }
