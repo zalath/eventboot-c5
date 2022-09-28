@@ -43,6 +43,8 @@ export default {
     };
   },
   created() {
+    this.$bus.off('nedit')
+    this.$bus.off('nnew')
     this.$bus.on('nedit', this.edit);
     this.$bus.on('nnew', this.new);
   },

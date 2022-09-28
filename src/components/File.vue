@@ -16,7 +16,6 @@
     <div class="bigpicdisplay" @click="showbigpic=false" v-if="showbigpic">
       <img :src="bigpic">
     </div>
-    <button @click="confirm()" value="click"/>
   </div>
 </template>
 
@@ -38,10 +37,14 @@ export default {
       baseurl: '',
       flin: {},
       refreshindex: false,
+      refreshfin: 0,
+      refreshmax: 0,
       newindex: 0
     }
   },
   created: function() {
+    this.t('reg file part')
+    this.$bus.off('editdone')
     this.$bus.on('editdone', this.confirm)
     this.flin = this.lin
     this.filelist = this.flin.file && this.flin.file !== '' ? this.flin.file.split(',') : []
@@ -52,25 +55,9 @@ export default {
     this.newindex = this.filelist.length
   },
   methods: {
-    confirm(nlin) {
-      this.tlin = nlin
-      console.log('indone------------------------------')
-      console.log(this.filelist)
-      console.log(this.files)
-      console.log(this.fileshow)
-      for (var i in this.files) {
-        if (this.files[i] === 'del') {
-          this.toDel(i)
-        } else if (!this.filelist[i]) {
-          this.toUpload(i)
-        } else {
-          this.toDel(i)
-          this.toupload(i)
-        }
-      }
-    },
     changeFile(i) {
       this.refreshindex = i
+      this.refreshtype = 'update'
       this.$refs.file.click()
     },
     delFile(i) {
@@ -78,8 +65,8 @@ export default {
     },
     addFile() {
       this.refreshindex = this.newindex
+      this.refreshtype = 'new'
       this.$refs.file.click()
-      this.newindex += 1
     },
     tempFile(event) {
       event.preventDefault()
@@ -89,33 +76,70 @@ export default {
       img.readAsDataURL(file)
       img.onload = ({ target }) => {
         this.fileshow[this.refreshindex] = target.result
+        if (this.refreshtype === 'new') this.newindex += 1
+      }
+    },
+    confirm(nlin) {
+      this.tlin = nlin
+      this.t('')
+      this.t('')
+      this.t('')
+      this.t('indone------------------------------')
+      this.t(this.filelist, 'filelist')
+      this.t(this.files, 'files')
+      this.t(this.fileshow, 'fileshow')
+      for (var i in this.files) {
+        this.refreshmax += 1
+      }
+      for (i in this.files) {
+        if (this.files[i] === 'del') {
+          this.toDel(i)
+        } else if (!this.filelist[i]) {
+          this.toUpload(i)
+        } else {
+          this.toDel(i)
+          this.toUpload(i)
+        }
       }
     },
     toUpload(i) {
       var formData = new FormData()
       formData.append('file', this.files[i])
-      console.log(i)
+      this.t('upload')
+      this.t(i, 'upload')
       req.upload(this.$store.state.conf, 'fupload', formData).then((res) => {
         if (res.status) {
           if (res.data !== 'mis') {
             this.filelist[i] = res.data
             this.fileshow[i] = this.baseurl + res.data
             this.files[i] = null
-            this.checkfin(i)
+            this.refreshfin += 1
+            this.checkfin()
           }
         }
       })
     },
     toDel(i) {
       var file = this.filelist[i]
-      console.log(i)
-      console.log(file)
-      if (file === undefined) return
+      this.t('del--')
+      this.t(i, 'del')
+      this.t(file, 'del')
+      if (file === undefined) {
+        this.t('nofile', 'del')
+        this.refreshfin += 1
+        this.filelist[i] = ''
+        this.checkfin()
+        return
+      }
       req.post(this.$store.state.conf, 'fdel', {del: file}).then((res) => {
         if (res.status) {
           if (res.data === 'done') {
+            this.t('done', 'del')
+            this.refreshfin += 1
             this.filelist[i] = ''
-            this.checkfin(i)
+            this.checkfin()
+          } else {
+            this.t('mis', 'del')
           }
         }
       })
@@ -124,28 +148,33 @@ export default {
       this.showbigpic = true
       this.bigpic = url
     },
-    checkfin(i) {
-      console.log('isfin---------------')
-      if (parseInt(i) + 1 === this.files.length && ['del', null].indexOf(this.files[i]) > -1) {
+    checkfin() {
+      this.t('isfin-----------------------------')
+      this.t(this.refreshfin + '--' + this.refreshmax)
+      if (this.refreshfin === this.refreshmax) {
         this.saveNote()
       }
     },
     saveNote() {
-      console.log('saving file')
-      console.log(this.filelist)
+      this.t('saving file')
+      this.t(this.filelist, 'save1')
       for (var i in this.filelist) {
-        if (this.filelist[i] === '') {
+        while (this.filelist[i] === '') {
           this.filelist.splice(i, 1)
         }
       }
-      console.log(this.filelist)
+      this.t(this.filelist, 'save2')
       this.flin.file = this.filelist.join(',')
-      console.log(this.flin.file)
+      this.t(this.flin.file, 'save3')
       var cmd = 'save'
       if (this.filefrom === 'note') {
         cmd = 'nsave'
       }
       req.post(this.$store.state.conf, cmd, this.flin)
+    },
+    t(a, txt = '') {
+      // console.log('FILE::::' + txt)
+      // console.log(a)
     }
   }
 }

@@ -33,6 +33,8 @@ export default {
     };
   },
   created() {
+    this.$bus.off('edit');
+    this.$bus.off('new');
     this.$bus.on('edit', this.edit);
     this.$bus.on('new', this.new);
   },

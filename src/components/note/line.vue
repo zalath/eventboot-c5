@@ -57,12 +57,17 @@ export default {
     if (this.tlin.pid === -1) {
       this.showchild = true
     }
+    this.$bus.off('nnew' + this.tlin.id)
+    this.$bus.off('nedit' + this.tlin.id)
+    this.$bus.off('ndel' + this.tlin.id)
+    this.$bus.off('nrefreshel' + this.tlin.id)
+    this.$bus.off('nboxed' + this.tlin.id)
     this.$bus.on('nnew' + this.tlin.id, this.donew)
     this.$bus.on('nedit' + this.tlin.id, this.doedit)
     this.$bus.on('ndel' + this.tlin.id, this.dodel)
     this.$bus.on('nrefreshel' + this.tlin.id, this.refreshel)
-    this.$bus.on('nwithtik', this.withtik)
     this.$bus.on('nboxed' + this.tlin.id, this.setbox)
+    this.$bus.on('nwithtik', this.withtik)
   },
   methods: {
     setbox(isbox) {
