@@ -3,7 +3,8 @@ const exec = require('child_process').exec;
 const cpu = require('cpu-stat')
 const os = require('os')
 const encpt = require('../js/encpt')
-const conf = require('../js/conf')
+const conf = require('../js/conf');
+const { DownloadItem } = require('electron');
 global.isloaded = false
 conf.getconfig()
 class init { }
@@ -60,6 +61,9 @@ init.initipc = function (win, ipc, shell, app) {
   })
   ipc.on('genclist', function(event, args) {
     encpt.encemp()
+  })
+  ipc.on('download', function(event, args) {
+    console.log(args)
   })
   setInterval(() => { init.readbit() }, 1000);
 }

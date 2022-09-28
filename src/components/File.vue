@@ -90,6 +90,17 @@ export default {
     },
     download() {
       var i = this.bigpic.index
+      // this.vueDownload(i)
+      this.electronDownload(i)
+    },
+    electronDownload(i) {
+      var d = {
+        path: this.baseurl + this.filelist[i],
+        name: this.getfilename(i)
+      }
+      this.$ipc.send('download', d)
+    },
+    vueDownload(i) {
       var dE = document.createElement('a')
       dE.href = this.filelist[i]
       dE.download = this.getfilename(i)
@@ -106,6 +117,7 @@ export default {
     },
     delFile(i) {
       this.files[i] = 'del'
+      this.filename = ''
     },
     addFile() {
       this.refreshindex = this.newindex
