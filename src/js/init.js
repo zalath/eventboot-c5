@@ -4,10 +4,13 @@ const cpu = require('cpu-stat')
 const os = require('os')
 const encpt = require('../js/encpt')
 const conf = require('../js/conf');
-const { DownloadItem } = require('electron');
+const { dialog } = require('electron');
+// const { DownloadItem } = require('electron');
 global.isloaded = false
 conf.getconfig()
-class init { }
+class init {
+}
+init.saveUrl = ''
 init.initipc = function (win, ipc, shell, app) {
   this.win = win
   ipc.on('bootenv', function (event, e) {
@@ -63,9 +66,29 @@ init.initipc = function (win, ipc, shell, app) {
     encpt.encemp()
   })
   ipc.on('download', function(event, args) {
-    console.log(args)
+    dialog.showOpenDialog({
+      properties: ['openFile', 'openDirectory']
+    }).then(files => {
+      init.saveUrl = files.filePaths[0] + '\\' + args.name;
+      if (!init.saveUrl || files.canceled === true) return;
+      win.webContents.downloadURL(args.path);
+    })
   })
-  setInterval(() => { init.readbit() }, 1000);
+  init.watchdownload(win)
+  // setInterval(() => { init.readbit() }, 1000);// 读取cpu使用量
+}
+init.watchdownload = function (win) {
+  win.webContents.session.on('will-download', (e, item, webContents) => {
+    item.setSavePath(init.saveUrl)
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        win.webContents.send('downloadRate', 'shut')
+      } else if (state === 'progressing') {
+        var rate = item.getReceivedBytes() / item.getTotalBytes() * 100
+        win.webContents.send('downloadRate', rate)
+      }
+    })
+  })
 }
 init.bootApps = function () {
   var list = global.gconf.boot

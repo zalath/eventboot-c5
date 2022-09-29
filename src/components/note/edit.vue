@@ -14,7 +14,7 @@
       <div :class="'content editpart '+editcontent">
         <textarea class="input" rows="20" v-model="lin.content" @contextmenu="contentswitch()" @change="rendertxt($event, lin.content)"/>
       </div>
-      <div :class="'content showpart '+showcontent" @contextmenu="contentswitch()" v-html="re"></div>
+      <div :class="'content showpart '+showcontent" @contextmenu="contentswitch()" v-html="renderedMarkdown"></div>
     </div>
     <file :lin="lin" :filefrom="'note'"/>
     <div class="btns">
@@ -37,7 +37,7 @@ export default {
       pid: '',
       lin: {},
       title: '',
-      re: '',
+      renderedMarkdown: '',
       editcontent: 'hide',
       showcontent: ''
     };
@@ -54,15 +54,16 @@ export default {
     },
     tomarkdown(txt) {
       var mdi = require('markdown-it')()
-      this.re = mdi.render(txt);
+      this.renderedMarkdown = mdi.render(txt);
     },
     submit() {
+      this.$bus.off('editalldone')
+      this.$bus.on('editalldone', this.close)
       if (this.title === 'edit') {
         this.doedit();
       } else if (this.title === 'new') {
         this.donew();
       }
-      this.close();
     },
     doedit() {
       console.log('saving')

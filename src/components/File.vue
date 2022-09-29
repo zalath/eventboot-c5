@@ -2,8 +2,9 @@
   <div class="filelistbox">
     <div class="filelist">
       <div class="filebox" v-for="(file,index) in fileshow" :key="index">
+        <pgbar v-if="fileup[index] && fileup[index] < 100" :now="fileup[index]"/>
         <div v-if="files[index] != 'del'" @mouseover="showname(index)" @mouseout="showname('')">
-          <img class="file" @click="toBigpic(index)" :src="file" @error="e => { e.target.src = blankimg }"/>
+          <img :class="fileup[index] > 0  && fileup[index] < 100 ? 'fileuploading' : 'file'" @click="toBigpic(index)" :src="file" @error="e => { e.target.src = blankimg }"/>
           <div>
             <button class="fileboxbtn fa fa-refresh" @click="changeFile(index)" />
             <button class="fileboxbtn fa fa-times" @click="delFile(index)"/>
@@ -18,6 +19,7 @@
     <input type="file" ref="file" class="hide" @change="tempFile($event)"/>
     <div class="bigpicdisplay" v-if="bigpic.isshow">
       <img :src="bigpic.pic" @click="bigpic.isshow=false" @error="e => { e.target.src = blankimg }">
+      <pgbar class="middle" v-if="downloadRate > 0 && downloadRate < 100" :now="downloadRate" :h="1.5"/>
       <div class="bigpicfilename">
         <span>&nbsp;{{bigpic.filename}}</span>
         <button v-if="bigpic.isdownload" class="bigpicbtn fa fa-level-down" @click="download()" />
@@ -29,8 +31,12 @@
 <script>
 import req from '../js/req'
 import blankimg from '../assets/blank.png'
+import pgbar from './com/progressbar'
 export default {
   name: 'file',
+  components: {
+    pgbar
+  },
   props: {
     lin: {},
     filefrom: String
@@ -47,7 +53,8 @@ export default {
         isdownload: true,
         index: 0
       },
-
+      downloadRate: 0,
+      fileup: [],
       filelist: [],
       fileshow: [],
       files: [],
@@ -62,6 +69,10 @@ export default {
     this.t('reg file part')
     this.$bus.off('editdone')
     this.$bus.on('editdone', this.confirm)
+    this.$ipc.removeAllListeners('downloadRate')
+    this.$ipc.on('downloadRate', (event, e) => {
+      this.setDownloadRate(e)
+    })
     this.flin = this.lin
     this.filelist = this.flin.file && this.flin.file !== '' ? this.flin.file.split(',') : []
     this.baseurl = this.$store.state.conf.conf.api
@@ -88,9 +99,14 @@ export default {
       }
       return this.filelist[i] === undefined ? this.files[i].name : this.filelist[i].substring(2)
     },
+    setDownloadRate(e) {
+      this.t(e)
+      if (e === 'shut') e = 0
+      this.downloadRate = e
+    },
     download() {
       var i = this.bigpic.index
-      // this.vueDownload(i)
+      this.downloadRate = 0
       this.electronDownload(i)
     },
     electronDownload(i) {
@@ -99,14 +115,6 @@ export default {
         name: this.getfilename(i)
       }
       this.$ipc.send('download', d)
-    },
-    vueDownload(i) {
-      var dE = document.createElement('a')
-      dE.href = this.filelist[i]
-      dE.download = this.getfilename(i)
-      document.body.append(dE)
-      dE.click()
-      document.body.removeChild(dE)
     },
     // end文件预览
     // 文件操作
@@ -129,11 +137,18 @@ export default {
       var file = this.$refs.file.files[0]
       this.files[this.refreshindex] = file
       var img = new FileReader()
-      img.readAsDataURL(file)
-      img.onload = ({ target }) => {
-        this.fileshow[this.refreshindex] = target.result
+      img.addEventListener('load', (e) => {
+        if (e.loaded < 10 * 1024 * 1024) this.fileshow[this.refreshindex] = e.target.result
+        else this.fileshow[this.refreshindex] = e
         if (this.refreshtype === 'new') this.newindex += 1
+      })
+      img.addEventListener('progress', (e) => {
+        this.fileup[this.refreshindex] = (e.loaded / e.total) * 100
+      })
+      img.onloadstart = ({ target }) => {
+        this.fileshow[this.refreshindex] = this.blankimg
       }
+      img.readAsDataURL(file)
     },
     confirm(nlin) {
       this.tlin = nlin
@@ -147,6 +162,7 @@ export default {
       for (var i in this.files) {
         this.refreshmax += 1
       }
+      if (this.refreshmax === 0) this.$bus.emit('editalldone')
       for (i in this.files) {
         if (this.files[i] === 'del') {
           this.toDel(i)
@@ -163,12 +179,18 @@ export default {
       formData.append('file', this.files[i])
       this.t('upload')
       this.t(i, 'upload')
-      req.upload(this.$store.state.conf, 'fupload', formData).then((res) => {
+      var uploadProgress = (pEvent) => {
+        this.fileup[i] = Number(
+          ((pEvent.loaded / pEvent.total) * 95).toFixed(2)
+        )
+      }
+      req.upload(this.$store.state.conf, 'fupload', formData, uploadProgress).then((res) => {
         if (res.status) {
           if (res.data !== 'mis') {
             this.filelist[i] = res.data
             this.fileshow[i] = this.baseurl + res.data
             this.files[i] = null
+            this.fileup[i] = 100
             this.refreshfin += 1
             this.checkfin()
           }
@@ -223,11 +245,12 @@ export default {
         cmd = 'nsave'
       }
       req.post(this.$store.state.conf, cmd, this.flin)
+      this.$bus.emit('editalldone')
     },
     // end文件操作
     t(a, txt = '') {
-      console.log('FILE::::' + txt)
-      console.log(a)
+      // console.log('FILE::::' + txt)
+      // console.log(a)
     }
   }
 }
@@ -259,6 +282,11 @@ export default {
   border solid 1px red
   height 6rem
   width 6rem
+.fileuploading
+  border solid 1px red
+  height 5rem
+  width 5rem
+  margin .5rem
 .fileboxbtn
   display none
   width 49%
@@ -310,6 +338,11 @@ export default {
   &:hover
     background white
     color red
+.middle
+  position absolute
+  top 50%
+  left 50%
+  transform translate(-50%,-50%)
 .filename
   text-align center
 </style>

@@ -60,9 +60,6 @@ async function createWindow () {
       win.webContents.send('setpage', 5);
     }
   })
-  win.webContents.on('will-download', (e, item) => {
-    console.log(item)
-  })
 }
 
 // Quit when all windows are closed.
