@@ -12,7 +12,13 @@ export default {
       tlin: this.lin
     }
   },
+  created() {
+    this.$bus.on('editalldown', this.updatefile)
+  },
   methods: {
+    pudatefile(file) {
+      if (file) this.tlin.file = file
+    },
     edit() {
       this.$bus.emit('nedit', { lin: this.tlin })
     }

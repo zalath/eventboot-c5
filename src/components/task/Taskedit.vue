@@ -18,7 +18,7 @@
 </template>
 <script>
 import req from '../../js/req';
-import file from '../File.vue'
+import file from '../File'
 export default {
   name: 'Taskedit',
   components: {
@@ -43,17 +43,17 @@ export default {
 
     },
     submit() {
+      this.$bus.off('editalldone')
+      this.$bus.on('editalldone', this.close)
       if (this.title === 'edit') {
         this.doedit();
       } else if (this.title === 'new') {
         this.donew();
       }
-      this.close();
     },
     doedit() {
       req.post(this.$store.state.conf, 'save', this.lin).then((res) => {
         if (res === 'done') {
-          this.$bus.emit('edit', this.lin);
           this.$bus.emit('editdone')
         }
       });
@@ -62,10 +62,11 @@ export default {
       this.lin.pid = this.pid;
       req.post(this.$store.state.conf, 'new', this.lin).then((res) => {
         if (res.data !== 'mis') {
+          this.lin.id = res.data
+          this.$bus.emit('editdone', this.lin)
           req.post(this.$store.state.conf, 'el', { id: res.data }).then((res) => {
             if (res.status) {
               this.$bus.emit('new' + this.pid, res.data);
-              this.$bus.emit('editdone')
             }
           });
         }

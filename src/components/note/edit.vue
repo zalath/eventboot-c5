@@ -105,7 +105,13 @@ export default {
       this.title = title;
       this.isshow = true;
     },
+    setfile(file) {
+      this.lin.file = file
+      console.log(this.lin)
+    },
     close() {
+      console.log('111')
+      console.log(this.lin)
       this.isshow = false;
     },
     contentswitch() {

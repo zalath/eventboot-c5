@@ -138,7 +138,7 @@ export default {
       this.files[this.refreshindex] = file
       var img = new FileReader()
       img.addEventListener('load', (e) => {
-        if (e.loaded < 10 * 1024 * 1024) this.fileshow[this.refreshindex] = e.target.result
+        if (e.loaded < 20 * 1024 * 1024) this.fileshow[this.refreshindex] = e.target.result
         else this.fileshow[this.refreshindex] = e
         if (this.refreshtype === 'new') this.newindex += 1
       })
@@ -245,12 +245,13 @@ export default {
         cmd = 'nsave'
       }
       req.post(this.$store.state.conf, cmd, this.flin)
-      this.$bus.emit('editalldone')
+      this.$parent.setfile(this.flin.file)
+      this.$bus.emit('editalldone', this.tlin)
     },
     // end文件操作
     t(a, txt = '') {
-      // console.log('FILE::::' + txt)
-      // console.log(a)
+      console.log('FILE::::' + txt)
+      console.log(a)
     }
   }
 }

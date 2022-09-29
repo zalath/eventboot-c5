@@ -2,7 +2,7 @@
   <i>
     <a class='fa fa-times' @click='isdel=!isdel'></a>
     <div class='isdel' v-if='isdel'>
-      you sure?
+      ?
       <a class='fa fa-check' @click='del()' />
     </div>
   </i>
