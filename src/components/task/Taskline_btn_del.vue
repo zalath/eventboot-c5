@@ -25,6 +25,7 @@ export default {
     del() {
       req.post(this.gconf, 'del', { id: this.tlin.id }).then((res) => {
         if (res.data === 'done') {
+          if (this.tlin.file !== '') req.post(this.gconf, 'fdel', {del: this.tlin.file})
           this.$bus.emit('del' + this.tlin.pid, { id: this.tlin.id, tik: this.tlin.tik})
         }
       })
