@@ -1,6 +1,7 @@
 <template>
   <div class="edit" v-if="isshow">
-    <h1>{{ title }}</h1>
+    <div v-if="title == 'new'" class="tc"><i class="fa fa-plus"/></div>
+    <div v-if="title == 'edit'" class="tc"><i class="fa fa-pencil"/></div>
     <div>
       <p v-if="title === 'new'">title</p>
       <textarea class="input" rows="4" v-model="lin.title" />
@@ -11,8 +12,8 @@
     </div>
     <file :lin="lin" :filefrom="'task'"/>
     <div class="btns">
-      <h4 class="fa fa-check" v-on:click="submit()" />
-      <h4 class="fa fa-times" v-on:click="close()" />
+      <button class="fa fa-check" v-on:click="submit()" />
+      <button class="fa fa-times" v-on:click="close()" />
     </div>
   </div>
 </template>
@@ -117,7 +118,6 @@ export default {
   padding 20px
 .btns
   float right
-  font-size 30px
 .input
   width 100%
   border none
@@ -127,14 +127,6 @@ export default {
   outline none
 .piclistbox
   line-height 100px
-.picadd
-  border solid 1px red
-  padding 3px
-  width 15px
-  height 15px
+.tc
   text-align center
-  border-radius 3px
-  &:hover
-    background-color red
-    color black
 </style>

@@ -170,6 +170,7 @@ div::-webkit-scrollbar-track
   background-color #000
 div::-webkit-scrollbar
   width 10px
+  height 10px
   background-color #000
 div::-webkit-scrollbar-thumb
   background-color red
@@ -189,5 +190,20 @@ textarea::-webkit-scrollbar-thumb
   background-color red
 textarea::-webkit-resizer
   background-color #000
-  border solid 1px red
+  border none
+  border-right solid 1px red
+  border-bottom solid 1px red
+
+button
+  cursor pointer
+  margin-left 0.5rem
+  border none
+  outline none
+  background black
+  color red
+  padding .5rem .7rem
+  &:hover
+    clip-path polygon(0% 0%,80% 0%,100% 20%,100% 100%,20% 100%,0% 80%)
+    background red
+    color white
 </style>

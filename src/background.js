@@ -60,6 +60,10 @@ async function createWindow () {
       win.webContents.send('setpage', 5);
     }
   })
+  win.webContents.on('will-navigate', function(e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url)
+  })
 }
 
 // Quit when all windows are closed.

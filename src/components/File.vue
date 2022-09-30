@@ -6,8 +6,8 @@
         <div v-if="files[index] != 'del'" @mouseover="showname(index)" @mouseout="showname('')">
           <img :class="fileup[index] > 0  && fileup[index] < 100 ? 'fileuploading' : 'file'" @click="toBigpic(index)" :src="file" @error="e => { e.target.src = blankimg }"/>
           <div>
-            <button class="fileboxbtn fa fa-refresh" @click="changeFile(index)" />
-            <button class="fileboxbtn fa fa-times" @click="delFile(index)"/>
+            <div class="fileboxbtn fa fa-refresh" @click="changeFile(index)" />
+            <div class="fileboxbtn fa fa-times" @click="delFile(index)"/>
           </div>
         </div>
       </div>
@@ -15,7 +15,7 @@
     <div>
       <div class="filename">&nbsp;{{filename}}</div>
     </div>
-    <div class="fileadd fa fa-plus" v-on:click="addFile()"></div>
+    <button class="fileadd fa fa-plus" v-on:click="addFile()" />
     <input type="file" ref="file" class="hide" @change="tempFile($event)"/>
     <div class="bigpicdisplay" v-if="bigpic.isshow">
       <img :src="bigpic.pic" @click="bigpic.isshow=false" @error="e => { e.target.src = blankimg }">
@@ -260,15 +260,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.fileadd
-  border solid 1px red
-  padding 3px
-  width 15px
-  height 15px
-  text-align center
-  &:hover
-    background-color red
-    color black
 .filebox
   display inline-block
   width 6rem
@@ -292,7 +283,9 @@ export default {
   margin .5rem
 .fileboxbtn
   display none
-  width 49%
+  width 45%
+  margin-left 2%
+  text-align center
   background none
   border solid 1px red
   color red
@@ -337,7 +330,7 @@ export default {
   font-size 1rem
   padding 0px .7rem
   line-height 1.5rem
-  clip-path polygon(0% 0%,70% 0%,100% 30%,100% 100%,35% 100%,0% 70%)
+  clip-path polygon(0% 0%,80% 0%,100% 20%,100% 100%,20% 100%,0% 80%)
   &:hover
     background white
     color red

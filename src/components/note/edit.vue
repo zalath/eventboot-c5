@@ -1,25 +1,32 @@
 <template>
   <div class="edit" v-if="isshow">
-    <h1>{{ title }}</h1>
+    <div v-if="title == 'new'" class="tc"><i class="fa fa-plus"/></div>
+    <div v-if="title == 'edit'" class="tc"><i class="fa fa-pencil"/></div>
     <div>
-      <p v-if="title === 'new'">title</p>
       <textarea class="input" rows="2" v-model="lin.title" />
     </div>
     <div>
-      <p v-if="title === 'new'">comment</p>
       <textarea class="input" rows="2" v-model="lin.cmt" />
     </div>
-    <div class="contentbox">
-      <p v-if="title === 'new'">content</p>
-      <div :class="'content editpart '+editcontent">
-        <textarea class="input" rows="20" v-model="lin.content" @contextmenu="contentswitch()" @change="rendertxt($event, lin.content)"/>
+    <div :class="'contentbox ' + contentFullPlace"></div>
+    <div :class="contentFullStyle">
+      <div class="contentbtns">
+        <button class="fa fa-expand" @click="contentFull()"/>
+        <button :class="'fa fa-link ' + editcontent" @click="contentInsert('link')"/>
+        <button :class="'fa fa-image ' + editcontent" @click="contentInsert('image')"/>
       </div>
-      <div :class="'content showpart '+showcontent" @contextmenu="contentswitch()" v-html="renderedMarkdown"></div>
+      <div :class="'contentbox ' + contentH100">
+        <div :class="'content editpart '+editcontent">
+          <textarea ref="contentEdit" class="input" rows="20" v-model="lin.content" @contextmenu="contentSwitch()" @change="renderTxt($event, lin.content)"/>
+        </div>
+        <div :class="'content showpart '+showcontent" @contextmenu="contentSwitch()" v-html="renderedMarkdown"></div>
+      </div>
+      <div style="clear:both"/>
     </div>
     <file :lin="lin" :filefrom="'note'"/>
     <div class="btns">
-      <h4 class="fa fa-check" v-on:click="submit()" />
-      <h4 class="fa fa-times" v-on:click="close()" />
+      <button class="fa fa-check" v-on:click="submit()" />
+      <button class="fa fa-times" v-on:click="close()" />
     </div>
   </div>
 </template>
@@ -38,8 +45,11 @@ export default {
       lin: {},
       title: '',
       renderedMarkdown: '',
+      contentFullStyle: '',
+      contentFullPlace: 'hide',
       editcontent: 'hide',
-      showcontent: ''
+      showcontent: '',
+      contentH100: ''
     };
   },
   created() {
@@ -49,16 +59,16 @@ export default {
     this.$bus.on('nnew', this.new);
   },
   methods: {
-    rendertxt(event, txt) {
-      this.tomarkdown(txt)
+    renderTxt(event, txt) {
+      this.toMarkdown(txt)
     },
-    tomarkdown(txt) {
+    toMarkdown(txt) {
       var mdi = require('markdown-it')()
       this.renderedMarkdown = mdi.render(txt);
     },
     submit() {
       this.$bus.off('editalldone')
-      this.$bus.on('editalldone', this.editclose)
+      this.$bus.on('editalldone', this.editClose)
       if (this.title === 'edit') {
         this.doedit();
       } else if (this.title === 'new') {
@@ -93,13 +103,13 @@ export default {
     edit(da) {
       this.lin = da.lin;
       this.pid = da.lin.pid;
-      this.tomarkdown(this.lin.content)
+      this.toMarkdown(this.lin.content)
       this.show('edit');
     },
     new(da) {
       this.pid = da.pid;
       this.lin = {};
-      this.tomarkdown('')
+      this.toMarkdown('')
       this.show('new');
       this.editcontent = ''
       this.showcontent = 'hide'
@@ -108,7 +118,7 @@ export default {
       this.title = title;
       this.isshow = true;
     },
-    editclose() {
+    editClose() {
       this.t('nedit close')
       if (this.title === 'new') {
         this.t('is new adding lin to parent')
@@ -119,9 +129,47 @@ export default {
     close() {
       this.isshow = false;
     },
-    contentswitch() {
+    contentSwitch() {
       this.editcontent = this.editcontent === 'hide' ? '' : 'hide'
       this.showcontent = this.showcontent === 'hide' ? '' : 'hide'
+    },
+    contentFull() {
+      this.contentFullStyle = this.contentFullStyle === 'contentfull' ? '' : 'contentfull'
+      this.contentFullPlace = this.contentFullPlace === 'hide' ? '' : 'hide'
+      this.contentH100 = this.contentH100 === '' ? 'h100' : ''
+    },
+    contentInsert(type) {
+      switch (type) {
+      case 'link':
+        this.insertTxt(this.$refs.contentEdit, '[ ]( )')
+        break;
+      case 'image':
+        this.insertTxt(this.$refs.contentEdit, '![ ](  "")')
+        break;
+      default:
+        break;
+      }
+    },
+    insertTxt(obj, t) {
+      this.t(obj)
+      this.t(obj.selectionStart)
+      if (document.selection) {
+        this.t('give')
+        var sel = document.selection.createRange();
+        sel.text = t
+      } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+        this.t('insert')
+        var startPos = obj.selectionStart
+        var endPos = obj.selectionEnd
+        var cursorPos = startPos
+        var tmpStr = obj.value
+        obj.value = tmpStr.substring(0, startPos) + t + tmpStr.substring(endPos, tmpStr.length);
+        cursorPos += t.length
+        obj.selectionStart = obj.selectionEnd = cursorPos
+      } else {
+        this.t('add')
+        obj.value += t
+      }
     },
     t(a, txt = '') {
       console.log('FILE--------------------------------------------------------------------')
@@ -141,10 +189,9 @@ export default {
   border solid 1px red
   width 80%
   text-align left
-  padding 20px
+  padding 1rem
 .btns
   float right
-  font-size 30px
 .input
   width 100%
   border none
@@ -152,18 +199,34 @@ export default {
   background-color black
   color aqua
   outline none
-.contentbox
-  height 20rem
-  position relative
 .content
   width 100%
   height 100%
   position absolute
+  background black
 .showpart
+  position relative
   border-bottom solid 1px red
   overflow-y: scroll
+.contentbox
+  height 20rem
+  position relative
+.contentfull
+  position fixed
+  top 0px
+  left 0px
+  height 100%
+  width 100%
+  background black
+  z-index 20
+.h100
+  height 100%
+.content textarea
+  height 100%
 .cb
   clear both
 .hide
   display none
+.tc
+  text-align center
 </style>
