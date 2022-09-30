@@ -244,13 +244,15 @@ export default {
       if (this.filefrom === 'note') {
         cmd = 'nsave'
       }
-      req.post(this.$store.state.conf, cmd, this.flin)
-      this.$parent.setfile(this.flin.file)
-      this.$bus.emit('editalldone', this.tlin)
+      req.post(this.$store.state.conf, cmd, this.flin).then((res) => {
+        this.t('save back')
+        this.$bus.emit('editalldone', this.tlin)
+      })
     },
     // end文件操作
     t(a, txt = '') {
-      console.log('FILE::::' + txt)
+      console.log('FILE--------------------------------------------------------------------')
+      if (txt !== '') console.log(txt)
       console.log(a)
     }
   }

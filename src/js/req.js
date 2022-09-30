@@ -1,10 +1,8 @@
 import axios from 'axios';
 import qs from 'qs';
 export default {
-  get: function(conf, url, onDownloadProgress) {
-    return axios.get(conf.conf.api + url, {
-      onDownloadProgress: onDownloadProgress
-    });
+  get: function(conf, url) {
+    return axios.get(conf.conf.api + url);
   },
   post: function(conf, url, data) {
     return axios.post(conf.conf.api + url, qs.stringify(data), {

@@ -58,7 +58,7 @@ export default {
     },
     submit() {
       this.$bus.off('editalldone')
-      this.$bus.on('editalldone', this.close)
+      this.$bus.on('editalldone', this.editclose)
       if (this.title === 'edit') {
         this.doedit();
       } else if (this.title === 'new') {
@@ -79,11 +79,14 @@ export default {
         if (res.data !== 'mis') {
           this.lin.id = res.data
           this.$bus.emit('editdone', this.lin)
-          req.post(this.$store.state.conf, 'nel', { id: res.data }).then((res) => {
-            if (res.status) {
-              this.$bus.emit('nnew' + this.pid, res.data);
-            }
-          });
+        }
+      });
+    },
+    donewAddLin() {
+      req.post(this.$store.state.conf, 'nel', { id: this.lin.id}).then((res) => {
+        if (res.status) {
+          this.t(res.data, 'adding lin return')
+          this.$bus.emit('nnew' + this.pid, res.data);
         }
       });
     },
@@ -105,18 +108,25 @@ export default {
       this.title = title;
       this.isshow = true;
     },
-    setfile(file) {
-      this.lin.file = file
-      console.log(this.lin)
+    editclose() {
+      this.t('nedit close')
+      if (this.title === 'new') {
+        this.t('is new adding lin to parent')
+        this.donewAddLin()
+      }
+      this.close()
     },
     close() {
-      console.log('111')
-      console.log(this.lin)
       this.isshow = false;
     },
     contentswitch() {
       this.editcontent = this.editcontent === 'hide' ? '' : 'hide'
       this.showcontent = this.showcontent === 'hide' ? '' : 'hide'
+    },
+    t(a, txt = '') {
+      console.log('FILE--------------------------------------------------------------------')
+      if (txt !== '') console.log(txt)
+      console.log(a)
     }
   }
 };
