@@ -66,9 +66,22 @@ export default {
       var mdi = require('markdown-it')()
       this.renderedMarkdown = mdi.render(txt);
     },
+    replaceMarkdownUrl(to) {
+      const t = '**--==--**'
+      const baseurl = this.$store.state.conf.conf.api
+      this.t(baseurl)
+      if (to === 'a-url') {
+        this.t('t to url')
+        this.lin.content = this.lin.content.replace(t, baseurl)
+      } else if (to === 'url-a') {
+        this.t('url to t')
+        this.lin.content = this.lin.content.replace(baseurl, t)
+      }
+    },
     submit() {
       this.$bus.off('editalldone')
       this.$bus.on('editalldone', this.editClose)
+      this.replaceMarkdownUrl('url-a')
       if (this.title === 'edit') {
         this.doedit();
       } else if (this.title === 'new') {
@@ -102,6 +115,7 @@ export default {
     },
     edit(da) {
       this.lin = da.lin;
+      this.replaceMarkdownUrl('a-url')
       this.pid = da.lin.pid;
       this.toMarkdown(this.lin.content)
       this.show('edit');
