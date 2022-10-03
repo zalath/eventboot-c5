@@ -70,6 +70,7 @@ export default {
       const t = '**--==--**'
       const baseurl = this.$store.state.conf.conf.api
       this.t(baseurl)
+      if (!this.lin.content) return
       if (to === 'a-url') {
         this.t('t to url')
         this.lin.content = this.lin.content.replace(t, baseurl)
@@ -125,8 +126,7 @@ export default {
       this.lin = {};
       this.toMarkdown('')
       this.show('new');
-      this.editcontent = ''
-      this.showcontent = 'hide'
+      this.contentSwitch('edit')
     },
     show(title) {
       this.title = title;
@@ -141,11 +141,20 @@ export default {
       this.close()
     },
     close() {
+      this.contentSwitch('show')
       this.isshow = false;
     },
-    contentSwitch() {
-      this.editcontent = this.editcontent === 'hide' ? '' : 'hide'
-      this.showcontent = this.showcontent === 'hide' ? '' : 'hide'
+    contentSwitch(type) {
+      if (type === 'edit') {
+        this.editcontent = ''
+        this.showcontent = 'hide'
+      } else if (type === 'show') {
+        this.editcontent = 'hide'
+        this.showcontent = ''
+      } else {
+        this.editcontent = this.editcontent === 'hide' ? '' : 'hide'
+        this.showcontent = this.showcontent === 'hide' ? '' : 'hide'
+      }
     },
     contentFull() {
       this.contentFullStyle = this.contentFullStyle === 'contentfull' ? '' : 'contentfull'
@@ -186,7 +195,7 @@ export default {
       }
     },
     t(a, txt = '') {
-      console.log('FILE--------------------------------------------------------------------')
+      console.log('Note Edit--------------------------------------------------------------------')
       if (txt !== '') console.log(txt)
       console.log(a)
     }
@@ -243,4 +252,6 @@ export default {
   display none
 .tc
   text-align center
+.showpart
+  color aqua
 </style>

@@ -78,11 +78,12 @@ export default {
       this.$bus.emit(type + 'box' + this.tlin.id)
     },
     showlins() {
-      if (this.tlin.ct > 0 && this.tlin.Child == null) {
-        this.getlins()
+      if (this.tlin.ct > 0) {
+        if (this.tlin.Child == null) this.getlins()
+        this.showchild = !this.showchild
+      } else {
+        this.$bus.emit('nedit', { lin: this.tlin })
       }
-      console.log(this.tlin)
-      this.showchild = !this.showchild
     },
     refreshel(val) {
       if (val.type === 'el') {
@@ -165,4 +166,6 @@ a
     clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,0 90%)
   to
     clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,100% 90%)
+</style>
+<style lang="stylus" src='../../css/markdown.styl'>
 </style>

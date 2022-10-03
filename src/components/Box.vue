@@ -185,6 +185,7 @@ textarea::-webkit-scrollbar-track
   background-color #000
 textarea::-webkit-scrollbar
   width 10px
+  height 10px
   background-color #000
 textarea::-webkit-scrollbar-thumb
   background-color red
