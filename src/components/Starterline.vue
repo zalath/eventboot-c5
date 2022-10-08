@@ -1,5 +1,5 @@
 <template>
-  <div v-if="line == ''">&nbsp;</div>
+  <div class="cb" v-if="line == ''">&nbsp;</div>
   <div v-else class="linepoz" @mouseenter="ishlight=1" @mouseleave="ishlight=0">
     <div class="stline" @click="openProject(line.path)" @contextmenu="openFolder(line.path)">
       <div class="line">
@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="stline" @click="bash(line.path)">
-      <div class="line">&emsp;>>></div>
+      <div class="line fa fa-terminal"></div>
     </div>
   </div>
 </template>
@@ -41,25 +41,17 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.stline
-  height 30px
-  cursor pointer
-  z-index 10
-  border solid 1px black
-  &:hover
-    background-color red
-    .line {
-      background-color red
-      color white
-    }
-.line
-  color red
-  background-color black
-  margin 0px 2%
-  position absolute
-  height 30px
-  line-height 30px
-  z-index 10
 .linepoz
-  margin auto
+  font-size 1.1rem
+  float left
+  margin 0 .5rem
+  .stline
+    float left
+    cursor pointer
+    padding .3rem .7rem
+    &:hover
+      background red
+      color white
+.cb
+  clear both
 </style>

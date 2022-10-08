@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app">
     <div class="tlist">
       <stLine v-for="(line,ind) in stList" :line="line" :key="ind"></stLine>
     </div>
@@ -33,5 +33,10 @@ export default {
 
 <style scoped lang="stylus">
 .tlist
-  margin-top 30px
+  position fixed
+  top 50%
+  left 50%
+  transform translate(-50%,-50%)
+  max-height 90%
+  overflow-y scroll
 </style>
