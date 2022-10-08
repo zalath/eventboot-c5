@@ -78,11 +78,12 @@ export default {
       this.$bus.emit(type + 'box' + this.tlin.id)
     },
     showlins() {
-      if (this.tlin.ct > 0 && this.tlin.Child == null) {
-        this.getlins()
+      if (this.tlin.ct > 0) {
+        if (this.tlin.Child == null) this.getlins()
+        this.showchild = !this.showchild
+      } else {
+        this.$bus.emit('edit', { lin: this.tlin })
       }
-      console.log(this.tlin)
-      this.showchild = !this.showchild
     },
     refreshel(val) {
       if (val.type === 'el') {

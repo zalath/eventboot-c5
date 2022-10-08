@@ -62,7 +62,7 @@ export default {
   background-color black
   z-index 10
   text-align center
-  padding 3%
+  padding .5rem
   border solid 1px red
 .inputbar
   width 100%

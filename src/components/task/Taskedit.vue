@@ -116,6 +116,7 @@ export default {
   width 50%
   text-align left
   padding 20px
+  z-index 20
 .btns
   float right
 .input

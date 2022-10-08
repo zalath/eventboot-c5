@@ -2,51 +2,76 @@
   <div id="app" class="noselect">
     <div class="tlist">
       <h2>starter</h2>
-      <div v-for='(s,ind) in config.starter' :key='ind' v-light="ind">
-        <span v-drag="ind" class="dragbar">
-          <span>{{ind}}:</span>&emsp;
-          <input v-if='s != ""' @change='changeval($event,"starter",ind,"name")' :value='s.name'/>
-          <input v-if='s != ""' @change='changeval($event,"starter",ind,"path")' :value='s.path'/>
-          <div class="fa fa-times funcbtn" @click="del('starter',ind)"></div>
-          <div class="fa fa-reorder funcbtn"></div>
-        </span>
+      <div v-for='(s,ind) in config.starter' :key='ind'>
+        <div v-if='s != ""' class="line startline dragbar" v-light="ind" v-drag="ind">
+          <div class="mid">
+            <div><input class="name" @change='changeval($event,"starter",ind,"name")' :value='s.name'/></div>
+            <div><input class="path" @change='changeval($event,"starter",ind,"path")' :value='s.path'/></div>
+          </div>
+          <div v-if="s != ''" class="l">
+            <div class="type" @click="choosetype[ind] = !choosetype[ind]">
+              <div v-if="s.type === 'app'" class="fa fa-rocket"></div>
+              <div v-else-if="s.type === 'project'" class="fa fa-code"></div>
+              <div v-else class="fa fa-chevron-down"></div>
+            </div>
+            <div class="choosetype" v-if="choosetype[ind]">
+              <div class="fa fa-rocket" @click="changeval('app','starter',ind,'type')"></div>
+              <div class="fa fa-code" @click="changeval('project','starter',ind,'type')"></div>
+            </div>
+            <div class="num">
+              {{ind}}
+            </div>
+          </div>
+          <div class="r">
+            <div class="fa fa-times cp close" @click="del('starter',ind)"></div>
+            <br/>
+            <div class="fa fa-reorder cp move"></div>
+          </div>
+        </div>
+        <div v-else class="line empty dragbar" v-light="ind" v-drag="ind">
+          <div class="r">
+            <div class="fa fa-chevron-left cp" @click="addLine(ind,0)"></div>
+            <div class="fa fa-chevron-right cp" @click="addLine(ind,1)"></div>
+            <div class="fa fa-times cp" @click="del('starter',ind)"></div>
+            <div class="fa fa-reorder cp"></div>
+          </div>
+        </div>
+        <div class="cb" v-if="s == ''">
+          <br />
+        </div>
       </div>
       <br/>
+      <div class="cb"></div>
       <div>
-        <div class="fa fa-plus funcbtn" @click="add('starter')"></div>
+        <div class="fa fa-plus cp" @click="add('starter')"></div>
       </div>
-
       <h2>menu</h2>
       <div v-for='(s,ind) in config.menu' :key='ind'>
         <span>{{ind}}:</span>&emsp;
         <input @change='changeval($event,"menu",ind,"name")' :value='s.name'/>
         <input @change='changeval($event,"menu",ind,"url")' :value='s.url'/>
-        <div class="fa fa-times funcbtn" @click="del('menu',ind)"></div>
+        <div class="fa fa-times cp" @click="del('menu',ind)"></div>
         <!-- <div>{{s.name}}:{{s.id}}:{{s.url}}</div> -->
       </div>
       <br/>
       <div>
-        <div class="fa fa-plus funcbtn" @click="add('menu')"></div>
+        <div class="fa fa-plus cp" @click="add('menu')"></div>
       </div>
 
       <h2>boot</h2>
       <div v-for='(s,ind) in config.boot' :key='ind'>
         <span>{{ind}}:</span>&emsp;
         <input @change='changeval($event,"boot",ind,"")' :value='s'/>
-        <div class="fa fa-times funcbtn" @click="del('boot',ind)"></div>
+        <div class="fa fa-times cp" @click="del('boot',ind)"></div>
       </div>
       <br/>
       <div>
-        <div class="fa fa-plus funcbtn" @click="add('boot')"></div>
+        <div class="fa fa-plus cp" @click="add('boot')"></div>
       </div>
       <h2>conf</h2>
       <div>
         <span>api:</span>&emsp;
         <input v-if='config.conf' @change='changeval($event,"conf","api","")' :value='config.conf.api'/>
-      </div>
-      <div>
-        <span>src:</span>&emsp;
-        <input v-if='config.conf' @change='changeval($event,"conf","src","")' :value='config.conf.src'/>
       </div>
       <br/>
       <div class="fa fa-check cp" @click="setconf()"></div>
@@ -64,7 +89,8 @@ export default {
       config: {},
       closetitle: 'confclose',
       moving: 0,
-      movto: 0
+      movto: 0,
+      choosetype: []
     }
   },
   created: function() {
@@ -96,6 +122,7 @@ export default {
         el.style.left = e.pageX - disx - 30 + 'px'
         el.style.top = e.pageY - disy + 'px'
         el.style.position = 'absolute'
+        el.style.zIndex = '10'
         ev.movi = binding.value
         ev.movis = true
         document.onmousemove = function (e) {
@@ -104,26 +131,31 @@ export default {
         }
         document.onmouseup = function() {
           document.onmousemove = document.onmouseup = null
+          el.style.left = '0px'
+          el.style.top = '0px'
           el.style.position = ''
+          el.style.zIndex = ''
+          ev.movis = false
         }
       }
     },
     light(el, binding) {
       el.onmouseenter = function(e) {
         if (binding.instance.movis) {
-          el.style.borderTop = 'solid 1px red'
-        }
-      }
-      el.onmouseleave = function() {
-        if (binding.instance.movis) {
-          el.style.borderTop = ''
-        }
-      }
-      el.onmouseup = function() {
-        if (binding.instance.movis) {
-          binding.instance.movto = binding.value
-          binding.instance.move()
-          el.style.borderTop = ''
+          el.style.borderRight = 'solid 4px red'
+          el.onmouseleave = function() {
+            if (binding.instance.movis) {
+              el.style.borderRight = ''
+              el.onmouseleave = el.onmouseup = null
+            }
+          }
+          el.onmouseup = function() {
+            if (binding.instance.movis) {
+              binding.instance.movto = binding.value
+              binding.instance.move()
+              el.style.borderRight = ''
+            }
+          }
         }
       }
     }
@@ -134,10 +166,15 @@ export default {
         this.config = e
       }
     },
+    addLine(id, pos) {
+      console.log(id, pos)
+      console.log(id + pos)
+      this.config.starter.splice(id + pos, 0, {name: '', path: ''})
+    },
     add(type) {
       switch (type) {
       case 'starter':
-        this.config.starter.push({name: '', path: ''})
+        this.config.starter.push('')
         break
       case 'menu':
         this.config.boot.push({name: '', url: ''})
@@ -152,11 +189,15 @@ export default {
       this.$ipc.send('setconfig', c)
     },
     changeval(e, part, ind, col = '') {
-      if (col === '') {
-        this.config[part][ind] = e.target.value
-      } else {
-        this.config[part][ind][col] = e.target.value
+      if (typeof e !== 'string') {
+        e = e.target.value
       }
+      if (col === '') {
+        this.config[part][ind] = e
+      } else {
+        this.config[part][ind][col] = e
+      }
+      this.choosetype[ind] = false
     },
     del(type, i) {
       switch (type) {
@@ -191,8 +232,7 @@ export default {
 .tlist
   margin-top 30px
   overflow auto
-.funcbtn
-  margin-left 10px
+.cp
   cursor pointer
 .movbar
   position absolute
@@ -201,8 +241,84 @@ export default {
 input
   background-color black
   border none
-  border-bottom solid 1px red
   color red
   outline none
-  width 40%
+  font-size 1rem
+  &:focus
+    border-bottom solid 1px red
+.line
+  height 4rem
+  position relative
+  margin .5rem
+  width 17rem
+  float left
+  background black
+.startline
+  border solid 1px red
+  &:hover
+    .r
+      display block
+  .l
+    position absolute
+    left 0
+    width 3rem
+    font-size 2rem
+    font-size 1.5rem
+    line-height 4rem
+    margin-left .3rem
+    .num
+      position absolute
+      bottom -0.8rem
+      right .7rem
+      font-size .7rem
+      line-height 1.7rem
+      background black
+      padding 0 .4rem
+    .choosetype
+      position absolute
+      bottom 0
+      left: 2rem
+      width 4rem
+      border solid 1px red
+      background black
+      div
+        padding 0 .25rem
+        line-height 2rem
+        &:hover
+          background red
+          color white
+  .mid
+    padding-left 3rem
+    position absolute
+    .name
+      font-size 1.5rem
+      width 12rem
+    .path
+      font-size .8rem
+      width 12rem
+  .r
+    display none
+    position absolute
+    right .2rem
+    height 3.9rem
+    .close
+      position absolute
+      top 0
+      right 0
+    .move
+      position absolute
+      bottom 0
+      right 0
+.cb
+  clear both
+.empty
+  float left
+  line-height 4rem
+  .r
+    div
+      padding 0.5rem .5rem
+      &:hover
+        background red
+        color white
+        clip-path polygon(0% 0%,80% 0%,100% 20%,100% 100%,20% 100%,0% 80%)
 </style>

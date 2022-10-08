@@ -72,8 +72,6 @@ a
   }
 .btns
   line-height 30px
-.space
-  position relative
 </style>
 <style lang="stylus">
 .tik0
