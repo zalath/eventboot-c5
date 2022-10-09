@@ -1,39 +1,54 @@
 <template>
   <div id="app" class="noselect">
     <div class="tlist">
+      <svg class="svg-defs">
+        <defs>
+          <clipPath id="s-clip" clipPathUnits="objectBoundingBox" transform="scale(0.0027472 0.0064102)">
+            <path fill-rule="evenodd" fill="rgb(0, 0, 0)" d="M347.014,0.001 L363.999,16.987 L363.999,155.999 L-0.000,155.999 L-0.000,-0.001 L347.014,-0.001 L347.014,0.001 Z"/>
+          </clipPath>
+        </defs>
+      </svg>
       <h2>starter</h2>
       <div v-for='(s,ind) in config.starter' :key='ind'>
-        <div v-if='s != ""' class="line startline dragbar" v-light="ind" v-drag="ind">
-          <div class="mid">
-            <div><input class="name" @change='changeval($event,"starter",ind,"name")' :value='s.name'/></div>
-            <div><input class="path" @change='changeval($event,"starter",ind,"path")' :value='s.path'/></div>
+        <div v-if='s != ""' class="line">
+          <div class="line startline dragbar" v-light="ind">
+            <div class="lincontent">
+              <div class="mid">
+                <div><input class="name" @change='changeval($event,"starter",ind,"name")' :value='s.name'/></div>
+                <div><input class="path" @change='changeval($event,"starter",ind,"path")' :value='s.path'/></div>
+              </div>
+              <div v-if="s != ''" class="l">
+                <div class="type" @click="choosetype[ind] = !choosetype[ind]">
+                  <div v-if="s.type === 'app'" class="fa fa-rocket"></div>
+                  <div v-else-if="s.type === 'project'" class="fa fa-code"></div>
+                  <div v-else-if="s.type === 'file'" class="fa fa-file-o"></div>
+                  <div v-else-if="s.type === 'folder'" class="fa fa-folder-o"></div>
+                  <div v-else class="fa fa-chevron-down"></div>
+                </div>
+                <div class="choosetype" v-if="choosetype[ind]">
+                  <div class="fa fa-rocket" @click="changeval('app','starter',ind,'type')"></div>
+                  <div class="fa fa-code" @click="changeval('project','starter',ind,'type')"></div>
+                  <div class="fa fa-file-o" @click="changeval('file','starter',ind,'type')"></div>
+                  <div class="fa fa-folder-o" @click="changeval('folder','starter',ind,'type')"></div>
+                </div>
+              </div>
+              <div class="r">
+                <div class="fa fa-times cp close" @click="del('starter',ind)"></div>
+                <br/>
+                <div class="fa fa-reorder cp move" v-drag="ind"></div>
+              </div>
+            </div>
           </div>
-          <div v-if="s != ''" class="l">
-            <div class="type" @click="choosetype[ind] = !choosetype[ind]">
-              <div v-if="s.type === 'app'" class="fa fa-rocket"></div>
-              <div v-else-if="s.type === 'project'" class="fa fa-code"></div>
-              <div v-else class="fa fa-chevron-down"></div>
-            </div>
-            <div class="choosetype" v-if="choosetype[ind]">
-              <div class="fa fa-rocket" @click="changeval('app','starter',ind,'type')"></div>
-              <div class="fa fa-code" @click="changeval('project','starter',ind,'type')"></div>
-            </div>
-            <div class="num">
-              {{ind}}
-            </div>
-          </div>
-          <div class="r">
-            <div class="fa fa-times cp close" @click="del('starter',ind)"></div>
-            <br/>
-            <div class="fa fa-reorder cp move"></div>
+          <div class="num" v-if="s != ''">
+            {{ind}}
           </div>
         </div>
-        <div v-else class="line empty dragbar" v-light="ind" v-drag="ind">
+        <div v-else class="line empty dragbar" v-light="ind">
           <div class="r">
             <div class="fa fa-chevron-left cp" @click="addLine(ind,0)"></div>
             <div class="fa fa-chevron-right cp" @click="addLine(ind,1)"></div>
             <div class="fa fa-times cp" @click="del('starter',ind)"></div>
-            <div class="fa fa-reorder cp"></div>
+            <div class="fa fa-reorder cp" v-drage="ind"></div>
           </div>
         </div>
         <div class="cb" v-if="s == ''">
@@ -74,7 +89,7 @@
         <input v-if='config.conf' @change='changeval($event,"conf","api","")' :value='config.conf.api'/>
       </div>
       <br/>
-      <div class="fa fa-check cp" @click="setconf()"></div>
+      <div class="fa fa-pencil cp save" @click="setconf()"></div>
     </div>
   </div>
 </template>
@@ -115,28 +130,21 @@ export default {
   },
   directives: {
     drag(el, binding) {
-      el.lastElementChild.onmousedown = function(e) {
+      el.onmousedown = function(e) {
+        var elv = el
         var ev = binding.instance;
-        var disx = e.pageX - el.offsetLeft;
-        var disy = e.pageY - el.offsetTop;
-        el.style.left = e.pageX - disx - 30 + 'px'
-        el.style.top = e.pageY - disy + 'px'
-        el.style.position = 'absolute'
-        el.style.zIndex = '10'
-        ev.movi = binding.value
-        ev.movis = true
-        document.onmousemove = function (e) {
-          el.style.left = e.pageX - disx - 30 + 'px'
-          el.style.top = e.pageY - disy + 'px'
-        }
-        document.onmouseup = function() {
-          document.onmousemove = document.onmouseup = null
-          el.style.left = '0px'
-          el.style.top = '0px'
-          el.style.position = ''
-          el.style.zIndex = ''
-          ev.movis = false
-        }
+        el = el.parentNode.parentNode.parentNode.parentNode;
+        ev.draging(el, ev, e, binding)
+        el = elv
+      }
+    },
+    drage(el, binding) {
+      el.onmousedown = function(e) {
+        var elv = el
+        var ev = binding.instance;
+        el = el.parentNode.parentNode;
+        ev.draging(el, ev, e, binding)
+        el = elv
       }
     },
     light(el, binding) {
@@ -161,6 +169,26 @@ export default {
     }
   },
   methods: {
+    draging(el, ev, e, binding) {
+      var disx = e.pageX - el.offsetLeft;
+      var disy = e.pageY - el.offsetTop;
+      el.style.left = e.pageX - disx - 30 + 'px'
+      el.style.top = e.pageY - disy + 'px'
+      el.style.position = 'absolute'
+      el.style.zIndex = '10'
+      el.style.display = 'block !important'
+      ev.movi = binding.value
+      ev.movis = true
+      document.onmousemove = function (e) {
+        el.style.left = e.pageX - disx - 30 + 'px'
+        el.style.top = e.pageY - disy + 'px'
+      }
+      document.onmouseup = function() {
+        document.onmousemove = document.onmouseup = null
+        el.style = ''
+        ev.movis = false
+      }
+    },
     initstarter(e) {
       if (e !== null) {
         this.config = e
@@ -234,6 +262,11 @@ export default {
   overflow auto
 .cp
   cursor pointer
+.save
+  position fixed
+  right 1rem
+  bottom 1rem
+  font-size 2rem
 .movbar
   position absolute
 .noselect
@@ -253,8 +286,27 @@ input
   width 17rem
   float left
   background black
+.linbox
+  position relative
+  float left
+.num
+  position absolute
+  top 0rem
+  left 1.3rem
+  font-size .8rem
+  background black
+  padding 0 .4rem
+  color red
+  font-weight bold
 .startline
-  border solid 1px red
+  padding 1px
+  clip-path url(#s-clip)
+  background red
+  .lincontent
+    clip-path url(#s-clip)
+    background black
+    width 100%
+    height 100%
   &:hover
     .r
       display block
@@ -266,24 +318,18 @@ input
     font-size 1.5rem
     line-height 4rem
     margin-left .3rem
-    .num
-      position absolute
-      bottom -0.8rem
-      right .7rem
-      font-size .7rem
-      line-height 1.7rem
-      background black
-      padding 0 .4rem
     .choosetype
       position absolute
-      bottom 0
-      left: 2rem
-      width 4rem
+      bottom -1px
+      left 2rem
+      width 8rem
       border solid 1px red
       background black
       div
-        padding 0 .25rem
-        line-height 2rem
+        height 4rem
+        line-height 4rem
+        width 2rem
+        text-align center
         &:hover
           background red
           color white
@@ -300,20 +346,13 @@ input
     display none
     position absolute
     right .2rem
-    height 3.9rem
-    .close
-      position absolute
-      top 0
-      right 0
-    .move
-      position absolute
-      bottom 0
-      right 0
+    height 2.9rem
+    bottom 0rem
 .cb
   clear both
 .empty
-  float left
   line-height 4rem
+  width 7.1rem
   .r
     div
       padding 0.5rem .5rem
@@ -321,4 +360,8 @@ input
         background red
         color white
         clip-path polygon(0% 0%,80% 0%,100% 20%,100% 100%,20% 100%,0% 80%)
+.svg-defs
+  position absolute
+  width 0
+  height 0
 </style>

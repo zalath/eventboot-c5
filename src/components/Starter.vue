@@ -38,5 +38,7 @@ export default {
   left 50%
   transform translate(-50%,-50%)
   max-height 90%
+  max-width 80%
   overflow-y scroll
+  padding 3px
 </style>

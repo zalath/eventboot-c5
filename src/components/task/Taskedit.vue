@@ -51,8 +51,8 @@ export default {
     },
     doedit() {
       req.post(this.$store.state.conf, 'save', this.lin).then((res) => {
-        if (res === 'done') {
-          this.$bus.emit('editdone')
+        if (res.data === 'done') {
+          this.$bus.emit('editdone', this.lin)
         }
       });
     },
@@ -98,7 +98,7 @@ export default {
       this.isshow = false;
     },
     t(a, txt = '') {
-      console.log('FILE--------------------------------------------------------------------')
+      console.log('taskedit--------------------------------------------------------------------')
       if (txt !== '') console.log(txt)
       console.log(a)
     }

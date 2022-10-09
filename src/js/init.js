@@ -57,7 +57,7 @@ init.initipc = function (win, ipc, shell, app) {
     exec('"C:/Program Files/Git/git-bash.exe" --cd=' + args, {})
   })
   ipc.on('stt', function(event, args) {
-    init.bootOne()
+    init.bootOne(args)
   })
   ipc.on('shut', function(event, args) {
     init.shut()
@@ -94,11 +94,7 @@ init.bootApps = function () {
   var list = global.gconf.boot
   var i = 0
   while (typeof (list[i]) !== 'undefined') {
-    if (list[i].indexOf('/') > 0) {
-      exec('"' + list[i] + '"')
-    } else {
-      exec(list[i])
-    }
+    init.bootOne(list[i])
     i++
   }
 }
@@ -121,6 +117,13 @@ init.readbit = function () {
 init.usagePercent = function (msg, rate, diffsecond) {
   if (msg == null) {
     if (init.win) init.win.webContents.send('addcpudata', rate);
+  }
+}
+init.bootOne = function (path) {
+  if (path.indexOf('/') > 0) {
+    exec('"' + path + '"')
+  } else {
+    exec(path)
   }
 }
 module.exports = init
