@@ -16,6 +16,11 @@ conf.setconfig = function(win, data) {
   for (var i = 0; i < data.boot.length; i++) {
     data.boot[i] = data.boot[i].replace(reg, '/')
   }
+  for (i = 0; i < data.starter.length; i++) {
+    if (typeof data.starter[i] !== 'string') {
+      data.starter[i].path = data.starter[i].path.replace(reg, '/')
+    }
+  }
   global.gconf = data
   var confdata = JSON.stringify(data)
   win.webContents.send('initd', data)
