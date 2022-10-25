@@ -1,12 +1,12 @@
 <template>
   <div class="cb" v-if="line == ''">&nbsp;</div>
   <div v-else class="linepoz" @mouseenter="ishlight=1" @mouseleave="ishlight=0">
-    <div class="stline" @click="click()" @contextmenu="contentMenu()">
+    <div class="stline clipbtn" @click="click()" @contextmenu="contentMenu()">
       <div class="line">
         <div class="linename">{{line.name}}</div>
       </div>
     </div>
-    <div v-if="line.type === 'project'" class="stline" @click="bash(line.path)">
+    <div v-if="line.type === 'project'" class="stline clipbtn" @click="bash(line.path)">
       <div class="line fa fa-terminal"></div>
     </div>
   </div>
@@ -66,39 +66,11 @@ export default {
 <style lang="stylus" scoped>
 .linepoz
   font-size 1.1rem
-  float left
+  float right
   margin 0 .5rem
-  .stline
-    position relative
-    float left
-    cursor pointer
-    margin 0 .3rem .2rem 0
-    padding .2rem .7rem
-    border solid 2px red
-    &::before
-      background-color: black;
-      border-top: 2px solid red;
-      bottom: -3px;
-      content: "";
-      height: 6px;
-      left: -5px;
-      position: absolute;
-      transform: rotate(45deg);
-      width: 12px;
-    &::after
-      background-color: black;
-      border-bottom: 2px solid red;
-      top: -3px;
-      content: "";
-      height: 6px;
-      right: -5px;
-      position: absolute;
-      transform: rotate(45deg);
-      width: 12px;
-    &:hover
-      background red
-      color white
 .cb
   clear both
   height .7rem
+</style>
+<style lang="stylus" src='../css/cyber.styl' scoped>
 </style>

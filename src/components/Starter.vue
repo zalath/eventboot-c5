@@ -35,8 +35,8 @@ export default {
 .tlist
   position fixed
   top 50%
-  left 50%
-  transform translate(-50%,-50%)
+  right 0
+  transform translate(0%,-50%)
   max-height 90%
   max-width 80%
   overflow-y scroll

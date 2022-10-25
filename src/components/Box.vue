@@ -16,13 +16,20 @@
         <div class="menubtn" @click="shut()">&gt;shut</div>
       </div>
     </div>
-    <div class="mainbody">
+    <!-- <div class="mainbody">
       <Task v-show="page === 1"/>
       <Starter v-show="page === 2"/>
       <Conf v-show="page === 3"/>
       <Tool v-show="page === 4"/>
-      <!-- <Watcher v-show="page === 5"/> -->
+      <Watcher v-show="page === 5"/>
       <Note v-show="page === 6"/>
+    </div> -->
+    <div class="mainbody">
+      <Task/>
+      <Note/>
+      <Starter/>
+      <Conf v-show="page === 3"/>
+      <Tool/>
     </div>
     <Setapi/>
     <popcheck/>

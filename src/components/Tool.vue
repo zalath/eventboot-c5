@@ -1,14 +1,58 @@
 <template>
   <div id="app">
     <div class="toolbox">
+      <div class="txtbox">
+        <textarea :value="originval" class="txt origin"/>
+        <textarea :value="targetval" class="txt target"/>
+      </div>
+      <div class="cb"/>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        b64.en
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        b64.de
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        url.en
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        url.de
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        md5
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        json
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        QR
+      </div>
+      <div class="cb"/>
+      <div class="toolbtn clipbtn" @click="copy(ip)">
+        {{ip}}
+      </div>
+      <div class="cb"/>
+      <div class="toolbtn clipbtn" @click="copy(timestamps)">
+        {{timestamps}}
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(timestamp)">
+        {{timestamp}}
+      </div>
+      <div class="toolbtn clipbtn" @click="copy(dateval)">
+        {{dateval}}
+      </div>
+      <div class="toolbtn clipbtn" @click="settime()">
+        <i class="fa fa-refresh"/>
+      </div>
+      <div class="cb"/>
+    </div>
+    <div class="tool1box">
       <input ref="inputCopy" value="for copy" style="opacity:0;position:absolute" />
       <br/>
       <a @click="genclist()">加密列表</a>
       <div class="tlist">
         <div class="tbox">
           <h1>IP</h1>{{ip}}<a class="fa fa-copy" @click="copy(ip)"></a>
-        </div>
-        <div class="tbox">
           <h1>TIME</h1>
           <div>
             {{timestamps}}
@@ -22,8 +66,6 @@
             &emsp;
             <a title='refresh' class='fa fa-refresh' @click="settime()"></a>
           </div>
-        </div>
-        <div class="tbox">
           <h1>base64</h1>
           <div>
             <textarea class="wNine f20" v-model="debase64val"/>
@@ -60,30 +102,25 @@
             &emsp;
             <a class="fa fa-copy" @click="copy(md5str)"></a>
           </div>
-        </div>
-      </div>
-      <div class="tlist">
-        <h1>JSON</h1>
-        <div v-if='!jsonpage'>
-          <a title='convert' class='fa fa-indent' @click='jsonconvert()'></a>
-          <br/>
-          <textarea rows="15" class="wNine" v-model='jsonstr' />
-        </div>
-        <div v-if='jsonpage'>
-          <a class="fa fa-times" @click="jsonpage = !jsonpage;jsonstr = ''"></a>
-          <br/>
-          <pre class="tl wNine ma">{{jsonstrd}}</pre>
-        </div>
-        <br/>
-      </div>
-      <div class="tbox">
-        <h1>qrcode</h1>
-        <div>
-          <textarea class="wNine f20" v-model="qrtxt"/>
-          <br/>
-          <a class="fa fa-cog" @click="qrcode()"></a>
-          <br />
-          <div class="fa wNine" ref="qrdiv"></div>
+          <h1>JSON</h1>
+          <div v-if='!jsonpage'>
+            <a title='convert' class='fa fa-indent' @click='jsonconvert()'></a>
+            <br/>
+            <textarea rows="15" class="wNine" v-model='jsonstr' />
+          </div>
+          <div v-if='jsonpage'>
+            <a class="fa fa-times" @click="jsonpage = !jsonpage;jsonstr = ''"></a>
+            <br/>
+            <pre class="tl wNine ma">{{jsonstrd}}</pre>
+          </div>
+          <h1>qrcode</h1>
+          <div>
+            <textarea class="wNine f20" v-model="qrtxt"/>
+            <br/>
+            <a class="fa fa-cog" @click="qrcode()"></a>
+            <br />
+            <div class="fa wNine" ref="qrdiv"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -200,6 +237,8 @@ export default {
 }
 </script>
 
+<style lang="stylus" src='../css/cyber.styl' scoped>
+</style>
 <style scoped lang="stylus">
 .wNine
   width 90%
@@ -208,7 +247,7 @@ export default {
   font-weight bold
 .ma
   margin auto
-.toolbox
+.tool1box
   margin-top 30px
   overflow auto
 textarea
@@ -216,9 +255,6 @@ textarea
   border solid 1px red
   color red
   outline none
-.fa
-  font-size 30px
-  margin auto
 .tbox div
   text-align center
 .tlist div
@@ -227,4 +263,27 @@ textarea
   font-size 20px
 .tbox h1
   text-align left
+.toolbox
+  position fixed
+  right 20px
+  bottom 20px
+  .txtbox
+    position relative
+    width 100%
+    height 2rem
+    margin .8rem .2rem
+    .txt
+      position absolute
+      height 100%
+      width 100%
+      overflow scroll
+    .target
+      left -5px
+      top -5px
+    .origin
+      z-index 20
+.toolbtn
+  margin .3rem .2rem
+.cb
+  clear both
 </style>
