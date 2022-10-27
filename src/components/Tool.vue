@@ -3,7 +3,7 @@
     <div class="largeTarget" :class="{hide: !isLargeTarget}" @contextmenu="toggleLarge()">
       <div class="pre fullsize">
         <pre v-if="isjson" class="fullsize ov">{{targetval}}</pre>
-        <div v-else-if="isqr" ref="qrCodeBox"></div>
+        <div v-else-if="isqr" class="qr fullsize ov" ref="qrCodeBox"></div>
         <textarea v-else v-model="targetval" class="fullsize ov"/>
       </div>
     </div>
@@ -178,17 +178,21 @@ export default {
       this.toggleTarget(true)
     },
     qrcode: function() {
-      this.$refs.qrdiv.innerHTML = ''
       this.isqr = true
-      var qr = new QRCode(this.$refs.qrCodeBox, {
-        text: this.originval,
-        width: 200,
-        height: 200,
-        colorDark: '#333',
-        colorLight: '#fff',
-        correctLevel: QRCode.CorrectLevel.L
-      })
       this.toggleLarge(true)
+      var that = this
+      setTimeout(function() {
+        that.$refs.qrCodeBox.innerHTML = null
+        var qr = new QRCode(that.$refs.qrCodeBox, {
+          text: that.originval,
+          width: 500,
+          height: 500,
+          colorDark: '#333',
+          colorLight: '#fff',
+          correctLevel: QRCode.CorrectLevel.H
+        })
+        qr.width = 1000
+      }, 500)
     },
     toggleTarget: function(is) {
       this.showTarget = typeof is === typeof true ? is : !this.showTarget
@@ -224,6 +228,7 @@ textarea
   height 3rem
   margin .8rem .2rem
 .fullsize
+  position relative
   height 100%
   width 100%
   font-size 1.2rem
@@ -274,7 +279,7 @@ textarea
     height 15rem
     background red
     clip-path polygon(0 0,100% 0,100% 100%,0 95%)
-  pre
+  pre,.qr
     padding 1rem
     background black
     border solid 1px red
@@ -291,4 +296,12 @@ textarea
   position absolute
 .fr
   float right
+</style>
+<style lang="stylus">
+.qr
+  img
+    position absolute
+    left 50%
+    top 50%
+    transform translate(-50%,-50%)
 </style>
