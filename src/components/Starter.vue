@@ -35,10 +35,10 @@ export default {
 .tlist
   position fixed
   top 50%
-  right 0
+  right 10px
   transform translate(0%,-50%)
   max-height 90%
   max-width 80%
-  overflow-y scroll
+  overflow-y auto
   padding 3px
 </style>

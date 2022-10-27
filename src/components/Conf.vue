@@ -23,6 +23,7 @@
                   <div v-else-if="s.type === 'project'" class="fa fa-code"></div>
                   <div v-else-if="s.type === 'file'" class="fa fa-file-o"></div>
                   <div v-else-if="s.type === 'folder'" class="fa fa-folder-o"></div>
+                  <div v-else-if="s.type === 'link'" class="fa fa-link"></div>
                   <div v-else class="fa fa-chevron-down"></div>
                 </div>
                 <div class="choosetype" v-if="choosetype[ind]">
@@ -30,6 +31,7 @@
                   <div class="fa fa-code" @click="changeval('project','starter',ind,'type')"></div>
                   <div class="fa fa-file-o" @click="changeval('file','starter',ind,'type')"></div>
                   <div class="fa fa-folder-o" @click="changeval('folder','starter',ind,'type')"></div>
+                  <div class="fa fa-link" @click="changeval('link','starter',ind,'type')"></div>
                 </div>
               </div>
               <div class="r">
@@ -60,19 +62,6 @@
       <div>
         <div class="fa fa-plus cp" @click="add('starter')"></div>
       </div>
-      <h2>menu</h2>
-      <div v-for='(s,ind) in config.menu' :key='ind'>
-        <span>{{ind}}:</span>&emsp;
-        <input @change='changeval($event,"menu",ind,"name")' :value='s.name'/>
-        <input @change='changeval($event,"menu",ind,"url")' :value='s.url'/>
-        <div class="fa fa-times cp" @click="del('menu',ind)"></div>
-        <!-- <div>{{s.name}}:{{s.id}}:{{s.url}}</div> -->
-      </div>
-      <br/>
-      <div>
-        <div class="fa fa-plus cp" @click="add('menu')"></div>
-      </div>
-
       <h2>boot</h2>
       <div v-for='(s,ind) in config.boot' :key='ind'>
         <span>{{ind}}:</span>&emsp;
@@ -322,7 +311,7 @@ input
       position absolute
       bottom -1px
       left 2rem
-      width 8rem
+      width 10rem
       border solid 1px red
       background black
       div

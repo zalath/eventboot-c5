@@ -40,6 +40,9 @@ export default {
       case 'folder' :
         this.openFolder(this.line.path)
         break;
+      case 'link' :
+        this.$ipc.send('tobrowser', this.line.path)
+        break;
       }
     },
     contentMenu: function() {
