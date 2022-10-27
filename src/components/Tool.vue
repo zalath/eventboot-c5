@@ -1,36 +1,65 @@
 <template>
   <div id="app">
+    <div class="largeTarget" :class="{hide: !isLargeTarget}" @contextmenu="toggleLarge()">
+      <div class="pre fullsize">
+        <pre v-if="isjson" class="fullsize ov">{{targetval}}</pre>
+        <div v-else-if="isqr" ref="qrCodeBox"></div>
+        <textarea v-else v-model="targetval" class="fullsize ov"/>
+      </div>
+    </div>
     <div class="toolbox">
       <div class="txtbox">
-        <textarea :value="originval" class="txt origin"/>
-        <textarea :value="targetval" class="txt target"/>
+        <div class="fullsize origin pa" :class="{txttop: !showTarget}" @click="toggleTarget(false)">
+          <textarea v-model="originval" class="fullsize ov"/>
+        </div>
+        <div class="fullsize target pa" :class="{txttop: showTarget}">
+          <textarea v-model="targetval" class="fullsize ov"/>
+        </div>
       </div>
       <div class="cb"/>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div>
+        <div class="clipbtn fr" @click="toggleLarge()">
+          <i class="fa fa-sort"/>
+        </div>
+        <div class="clipbtn fr" @click="toggleTarget()">
+          <i class="fa fa-retweet"/>
+        </div>
+        <div class="clipbtn fr" @click="copy(targetval)">
+          <i class="fa fa-copy"/>
+        </div>
+      </div>
+      <div class="cb"/>
+      <div class="toolbtn clipbtn" @click="base64()">
         b64.en
       </div>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div class="toolbtn clipbtn" @click="debase64()">
         b64.de
       </div>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div class="toolbtn clipbtn" @click="url()">
         url.en
       </div>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div class="toolbtn clipbtn" @click="deurl()">
         url.de
       </div>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div class="toolbtn clipbtn" @click="md5()">
         md5
       </div>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div class="toolbtn clipbtn" @click="jsonconvert()">
         json
       </div>
-      <div class="toolbtn clipbtn" @click="copy(ip)">
+      <div class="toolbtn clipbtn" @click="qrcode()">
         QR
       </div>
       <div class="cb"/>
+      <div class="toolbtn clipbtn" @click="convert()">
+        time
+      </div>
       <div class="toolbtn clipbtn" @click="copy(ip)">
         {{ip}}
       </div>
+      <!-- <div class="toolbtn clipbtn" @click="getclist()">
+        加密测试
+      </div> -->
       <div class="cb"/>
       <div class="toolbtn clipbtn" @click="copy(timestamps)">
         {{timestamps}}
@@ -44,92 +73,15 @@
       <div class="toolbtn clipbtn" @click="settime()">
         <i class="fa fa-refresh"/>
       </div>
-      <div class="cb"/>
     </div>
-    <div class="tool1box">
-      <input ref="inputCopy" value="for copy" style="opacity:0;position:absolute" />
+    <input ref="inputCopy" value="for copy" style="opacity:0;position:absolute" />
       <br/>
-      <a @click="genclist()">加密列表</a>
-      <div class="tlist">
-        <div class="tbox">
-          <h1>IP</h1>{{ip}}<a class="fa fa-copy" @click="copy(ip)"></a>
-          <h1>TIME</h1>
-          <div>
-            {{timestamps}}
-            <a class="fa fa-copy" @click="copy(timestamps)"></a>&emsp;
-            {{timestamp}}
-            <a class="fa fa-copy" @click="copy(timestamp)"></a>&emsp;
-            {{dateval}}
-            <a class="fa fa-copy" @click="copy(dateval)"></a>&emsp;
-            <textarea class="wNine f20" v-model="dateval" /><br/>
-            <a title='convert' class='fa fa-calendar-check-o' @click="convert()"></a>
-            &emsp;
-            <a title='refresh' class='fa fa-refresh' @click="settime()"></a>
-          </div>
-          <h1>base64</h1>
-          <div>
-            <textarea class="wNine f20" v-model="debase64val"/>
-            <br/>
-            <a class="fa fa-cog" @click="base64()"></a>
-            &emsp;
-            <a class="fa fa-copy" @click="copy(debase64val)"></a>
-            <br />
-            <textarea class="wNine f20" v-model="base64val"/>
-            <br/>
-            <a class="fa fa-cog" @click="debase64()"></a>
-            &emsp;
-            <a class="fa fa-copy" @click="copy(base64val)"></a>
-          </div>
-          <h1>url</h1>
-          <div>
-            <textarea class="wNine f20" v-model="deurlval"/>
-            <br/>
-            <a class="fa fa-cog" @click="url()"></a>
-            &emsp;
-            <a class="fa fa-copy" @click="copy(deurlval)"></a>
-            <br/>
-            <textarea class="wNine f20" v-model="urlval"/>
-            <br/>
-            <a class="fa fa-cog" @click="deurl()"></a>
-            &emsp;
-            <a class="fa fa-copy" @click="copy(urlval)"></a>
-          </div>
-          <h1>md5</h1>
-          <div>
-            <textarea class="wNine f20" v-model="md5str" />
-            <br/>
-            <a class="fa fa-cog" @click="md5()"></a>
-            &emsp;
-            <a class="fa fa-copy" @click="copy(md5str)"></a>
-          </div>
-          <h1>JSON</h1>
-          <div v-if='!jsonpage'>
-            <a title='convert' class='fa fa-indent' @click='jsonconvert()'></a>
-            <br/>
-            <textarea rows="15" class="wNine" v-model='jsonstr' />
-          </div>
-          <div v-if='jsonpage'>
-            <a class="fa fa-times" @click="jsonpage = !jsonpage;jsonstr = ''"></a>
-            <br/>
-            <pre class="tl wNine ma">{{jsonstrd}}</pre>
-          </div>
-          <h1>qrcode</h1>
-          <div>
-            <textarea class="wNine f20" v-model="qrtxt"/>
-            <br/>
-            <a class="fa fa-cog" @click="qrcode()"></a>
-            <br />
-            <div class="fa wNine" ref="qrdiv"></div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import md5 from 'js-md5'
-// import Qrcode from 'qrcodejs2'
+import QRCode from 'qrcodejs2'
 const Ip = require('ip')
 const base64 = require('js-base64').Base64;
 // import Cb from 'clipboard'
@@ -142,17 +94,13 @@ export default {
       dateval: '',
       timestamp: '',
       timestamps: '',
-      jsonstr: '',
-      jsonstrd: '',
-      jsonpage: false,
-      closetitle: 'toolclose',
-      base64val: '',
-      debase64val: '',
-      urlval: '',
-      deurlval: '',
-      md5str: '',
-      qrtxt: '',
-      ip: Ip.address()
+      originval: '',
+      targetval: '',
+      ip: Ip.address(),
+      isLargeTarget: false,
+      showTarget: false,
+      isjson: false,
+      isqr: false
     }
   },
   created: function() {
@@ -160,7 +108,6 @@ export default {
   },
   methods: {
     genclist: function() {
-      console.log(222)
       this.$ipc.send('genclist')
     },
     settime: function() {
@@ -169,17 +116,17 @@ export default {
       this.dateval = this.datefmt(new Date())
     },
     convert: function() {
-      this.timestamp = Date.parse(this.dateval)
-      this.timestamps = Date.parse(this.dateval) / 1000
+      this.timestamp = Date.parse(this.originval)
+      this.timestamps = Date.parse(this.originval) / 1000
       if (isNaN(this.timestamp)) {
-        this.timestamps = this.datefmt(new Date(this.dateval * 1000))
+        this.timestamps = this.datefmt(new Date(this.originval * 1000))
       }
+      this.toggleTarget(false)
     },
     jsonconvert: function() {
-      if (this.jsonstr !== '') {
-        this.jsonstrd = JSON.parse(this.jsonstr)
-        this.jsonpage = true
-      }
+      this.targetval = JSON.parse(this.originval)
+      this.toggleLarge(true)
+      this.isjson = true
     },
     copy: function(text) {
       const input = this.$refs.inputCopy
@@ -207,31 +154,52 @@ export default {
       return fmt;
     },
     base64: function() {
-      this.base64val = base64.encode(this.debase64val)
+      console.log(this.originval)
+      console.log(this.targetval)
+      this.targetval = base64.encode(this.originval)
+      console.log(this.originval)
+      console.log(this.targetval)
+      this.toggleTarget(true)
     },
     debase64: function() {
-      this.debase64val = base64.decode(this.base64val)
+      this.targetval = base64.decode(this.originval)
+      this.toggleTarget(true)
     },
     url: function() {
-      this.urlval = encodeURIComponent(this.deurlval)
+      this.targetval = encodeURIComponent(this.originval)
+      this.toggleTarget(true)
     },
     deurl: function() {
-      this.deurlval = decodeURIComponent(this.urlval)
+      this.targetval = decodeURIComponent(this.originval)
+      this.toggleTarget(true)
     },
     md5: function() {
-      this.md5str = md5(this.md5str)
+      this.targetval = md5(this.originval)
+      this.toggleTarget(true)
     },
     qrcode: function() {
       this.$refs.qrdiv.innerHTML = ''
-      // var qr = new Qrcode(this.$refs.qrdiv, {
-      //   text: this.qrtxt,
-      //   width: 200,
-      //   height: 200,
-      //   colorDark: '#333',
-      //   colorLight: '#fff',
-      //   correctLevel: Qrcode.CorrectLevel.L
-      // })
-      // qr.width = 200
+      this.isqr = true
+      var qr = new QRCode(this.$refs.qrCodeBox, {
+        text: this.originval,
+        width: 200,
+        height: 200,
+        colorDark: '#333',
+        colorLight: '#fff',
+        correctLevel: QRCode.CorrectLevel.L
+      })
+      this.toggleLarge(true)
+    },
+    toggleTarget: function(is) {
+      this.showTarget = typeof is === typeof true ? is : !this.showTarget
+    },
+    toggleLarge: function(is) {
+      this.isLargeTarget = typeof is === typeof true ? is : !this.isLargeTarget
+      this.isjson = this.isLargeTarget === false ? false : this.isjson
+      this.isqr = this.isLargeTarget === false ? false : this.isqr
+    },
+    toggleShow: function(is) {
+      this.isShowJson = true
     }
   }
 }
@@ -240,50 +208,87 @@ export default {
 <style lang="stylus" src='../css/cyber.styl' scoped>
 </style>
 <style scoped lang="stylus">
-.wNine
-  width 90%
-.tl
-  text-align left
-  font-weight bold
-.ma
-  margin auto
-.tool1box
-  margin-top 30px
-  overflow auto
+lv = #00d944
 textarea
   background-color black
   border solid 1px red
   color red
   outline none
-.tbox div
-  text-align center
-.tlist div
-  text-align center
-.f20
-  font-size 20px
-.tbox h1
-  text-align left
 .toolbox
   position fixed
   right 20px
   bottom 20px
-  .txtbox
-    position relative
-    width 100%
-    height 2rem
-    margin .8rem .2rem
-    .txt
-      position absolute
-      height 100%
-      width 100%
-      overflow scroll
-    .target
-      left -5px
-      top -5px
-    .origin
-      z-index 20
+.txtbox
+  position relative
+  width 100%
+  height 3rem
+  margin .8rem .2rem
+.fullsize
+  height 100%
+  width 100%
+  font-size 1.2rem
+.txttop
+  z-index 20
+.target
+  left -5px
+  .fullsize
+    border solid 1px lv
+    color lv
+  &::before
+    cursor pointer
+    content ""
+    background lv
+    position absolute
+    left -5px
+    width 5px
+    top 0
+    height 1.2rem
+    clip-path polygon(0 0,100% 0,100% 100%,0 70%)
+.origin
+  top -5px
+  &::before
+    cursor pointer
+    content ""
+    background red
+    position absolute
+    top -5px
+    height 5px
+    width 1.5rem
+    clip-path polygon(0 0,70% 0,100% 100%,0 100%)
+.largeTarget
+  position fixed
+  width 60%
+  height 60%
+  left 50%
+  top 50%
+  transform translate(-50%,-50%)
+  z-index 20
+  font-size 1.2rem
+  font-weight bold
+  &::before
+    content ""
+    position absolute
+    left -.7rem
+    top -1px
+    width .7rem
+    height 15rem
+    background red
+    clip-path polygon(0 0,100% 0,100% 100%,0 95%)
+  pre
+    padding 1rem
+    background black
+    border solid 1px red
+    margin 0
 .toolbtn
   margin .3rem .2rem
+.hide
+  display none
 .cb
   clear both
+.ov
+  overflow scroll
+.pa
+  position absolute
+.fr
+  float right
 </style>

@@ -183,24 +183,27 @@ div::-webkit-scrollbar-thumb
   background-color red
 div::-webkit-scrollbar-corner
   background-color red
-dev::-webkit-resizer
+div::-webkit-resizer
   background-color #000
   border solid 1px red
 
-textarea::-webkit-scrollbar-track
+pre::-webkit-scrollbar-track,textarea::-webkit-scrollbar-track
   -webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.3)
   background-color #000
-textarea::-webkit-scrollbar
+pre::-webkit-scrollbar,textarea::-webkit-scrollbar
   width 10px
   height 10px
   background-color #000
-textarea::-webkit-scrollbar-thumb
+pre::-webkit-scrollbar-thumb,textarea::-webkit-scrollbar-thumb
   background-color red
 textarea::-webkit-resizer
   background-color #000
   border none
   border-right solid 1px red
   border-bottom solid 1px red
+pre::-webkit-scrollbar-corner
+  background-color #000
+  border none
 
 button
   cursor pointer
