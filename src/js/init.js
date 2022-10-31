@@ -47,7 +47,7 @@ init.initipc = function (win, ipc, shell, app) {
   })
   // 启动器
   ipc.on('openProject', function (event, args) {
-    exec('code ' + args, {});
+    exec('code "' + args + '"', {});
   })
   ipc.on('openFolder', function (event, args) {
     var path = args.replace(/\//g, '\\');

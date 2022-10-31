@@ -5,6 +5,14 @@
       <div class="line">
         <div class="linename">{{line.name}}</div>
       </div>
+      <div class="mark">
+        <i v-if="line.type === 'app'" class="fa fa-rocket"/>
+        <i v-else-if="line.type === 'project'" class="fa fa-code"/>
+        <i v-else-if="line.type === 'file'" class="fa fa-file-o"/>
+        <i v-else-if="line.type === 'folder'" class="fa fa-folder-o"/>
+        <i v-else-if="line.type === 'link'" class="fa fa-link"/>
+        <i v-else class="fa fa-chevron-down"/>
+      </div>
     </div>
     <div v-if="line.type === 'project'" class="stline clipbtn" @click="bash(line.path)">
       <div class="line fa fa-terminal"></div>
@@ -74,6 +82,13 @@ export default {
 .cb
   clear both
   height .7rem
+.mark
+  position absolute
+  left .3rem
+  top -.8rem
+  background black
+  font-size .8rem
+  padding 0 .3rem
 </style>
 <style lang="stylus" src='../css/cyber.styl' scoped>
 </style>

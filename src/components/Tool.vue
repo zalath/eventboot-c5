@@ -27,6 +27,9 @@
         <div class="clipbtn fr" @click="copy(targetval)">
           <i class="fa fa-copy"/>
         </div>
+        <div class="clipbtn fr" @click="()=>{originval=''}">
+          <i class="fa fa-refresh"/>
+        </div>
       </div>
       <div class="cb"/>
       <div class="toolbtn clipbtn" @click="base64()">
@@ -213,6 +216,7 @@ export default {
 </style>
 <style scoped lang="stylus">
 lv = #00d944
+textareaScroll(lv)
 textarea
   background-color black
   border solid 1px red
@@ -249,6 +253,7 @@ textarea
     top 0
     height 1.2rem
     clip-path polygon(0 0,100% 0,100% 100%,0 70%)
+
 .origin
   top -5px
   &::before
@@ -277,13 +282,17 @@ textarea
     top -1px
     width .7rem
     height 15rem
-    background red
+    background lv
     clip-path polygon(0 0,100% 0,100% 100%,0 95%)
-  pre,.qr
+  pre,.qr,textarea
     padding 1rem
     background black
-    border solid 1px red
+    border solid 1px lv
+    color lv
     margin 0
+  textarea::-webkit-resizer
+    border-right solid 1px lv
+    border-bottom solid 1px lv
 .toolbtn
   margin .3rem .2rem
 .hide

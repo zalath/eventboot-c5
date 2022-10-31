@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-  name: 'menu',
+  name: 'menubox',
   methods: {
     boot: function() {
       this.$ipc.send('bootenv')
