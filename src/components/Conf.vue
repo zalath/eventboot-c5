@@ -78,7 +78,8 @@
         <input v-if='config.conf' @change='changeval($event,"conf","api","")' :value='config.conf.api'/>
       </div>
       <br/>
-      <div class="fa fa-pencil cp save" @click="setconf()"></div>
+      <div class="fa fa-times cp save" @click="this.$bus.emit('toggleconf')"></div>
+      <div class="fa fa-pencil cp save confirm" @click="setconf()"></div>
     </div>
   </div>
 </template>
@@ -247,8 +248,11 @@ export default {
 
 <style scoped lang="stylus">
 .tlist
-  margin-top 30px
   overflow auto
+  height 100%
+  width 100%
+  overflow auto
+  position relative
 .cp
   cursor pointer
 .save
@@ -256,10 +260,21 @@ export default {
   right 1rem
   bottom 1rem
   font-size 2rem
+.confirm
+  right 4rem
 .movbar
   position absolute
 .noselect
   user-select none
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
+  height: 67%;
+  width: 100%;
+  background: black;
+  border-top: solid 1px red;
+  border-bottom: solid 1px red;
 input
   background-color black
   border none

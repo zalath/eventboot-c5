@@ -1,7 +1,21 @@
 <template>
   <div class="menubox">
-    <div class="clipbtn" @click="boot()">boot</div>
-    <div class="clipbtn" @click="shut()">shut</div>
+    <div class="clipbtn" v-if="!isclear" @click="clearWindow(false)">
+      <i class="fa fa-square-o"/>
+      <i class="fa fa-caret-right"/>
+    </div>
+    <div class="clipbtn" v-if="isclear" @click="clearWindow(true)">
+      <i class="fa fa-square-o"/>
+      <i class="fa fa-caret-left"/>
+    </div>
+    <div class="clipbtn" @click="boot()">
+      <i class="fa fa-angle-up"/>
+      <i class="fa fa-chevron-up"/>
+    </div>
+    <div class="clipbtn" @click="shut()">
+      <i class="fa fa-times"/>
+      <i class="fa fa-times"/>
+    </div>
     <div class="clipbtn" @click="toggleconf()">
       <i class="fa fa-cog"/>
     </div>
@@ -13,6 +27,11 @@
 <script>
 export default {
   name: 'menubox',
+  data: function() {
+    return {
+      isclear: false
+    }
+  },
   methods: {
     boot: function() {
       this.$ipc.send('bootenv')
@@ -31,6 +50,11 @@ export default {
     },
     toggleconf: function() {
       this.$bus.emit('toggleconf')
+    },
+    clearWindow: function(is) {
+      this.isclear = !is
+      this.$bus.emit('setShowTool', is)
+      this.$bus.emit('setShowStarter', is)
     }
   }
 }

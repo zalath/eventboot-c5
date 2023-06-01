@@ -7,7 +7,7 @@
       </a>
       <template v-if="lin.tikc.length > 0">
         <a v-for="(t) in tlin.tikc" :key="t.tik">
-          <a :class="'fa tikname'+t.tik">{{t.c}}</a>
+          <a :class="'fa tikname'+t.tik" @click="showtik(t.tik)">{{t.c}}</a>
         </a>
       </template>
       <template v-if='isbtn'>
@@ -68,6 +68,7 @@ export default {
     this.$bus.on('refreshel' + this.tlin.id, this.refreshel)
     this.$bus.on('boxed' + this.tlin.id, this.setbox)
     this.$bus.on('withtik', this.withtik)
+    this.$bus.on('withtik-' + this.tlin.pid, this.withtik)
   },
   methods: {
     setbox(isbox) {
@@ -90,6 +91,14 @@ export default {
         this.tlin = val.data
       } else if (val.type === 'child') {
         this.tlin.Child = val.data
+      }
+    },
+    showtik(tik) {
+      if (this.tlin.Child != null) {
+        this.showchild = true
+        this.$bus.emit('withtik-' + this.tlin.id, tik)
+      } else {
+        this.showlins();
       }
     },
     getlins() {
@@ -125,6 +134,7 @@ export default {
       this.sendbox('light')
     },
     withtik(tik) {
+      console.log(tik)
       if (tik === -1) {
         this.isshow = true
       } else if (this.tlin.tik === tik) {
