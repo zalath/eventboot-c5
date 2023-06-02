@@ -40,26 +40,27 @@ async function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
-  win.webContents.on('before-input-event', (event, input) => {
-    if (input.control && input.key.toLocaleLowerCase() === 't') {
-      win.webContents.send('setpage', 1);
-    }
-    if (input.control && input.key.toLocaleLowerCase() === 'e') {
-      win.webContents.send('setpage', 6);
-    }
-    if (input.control && input.key.toLocaleLowerCase() === 's') {
-      win.webContents.send('setpage', 2);
-    }
-    if (input.control && input.key.toLocaleLowerCase() === 'f') {
-      win.webContents.send('setpage', 3);
-    }
-    if (input.control && input.key.toLocaleLowerCase() === 'q') {
-      win.webContents.send('setpage', 4);
-    }
-    if (input.control && input.key.toLocaleLowerCase() === 'w') {
-      win.webContents.send('setpage', 5);
-    }
-  })
+  // // hot keys send message to view
+  // win.webContents.on('before-input-event', (event, input) => {
+  //   if (input.control && input.key.toLocaleLowerCase() === 't') {
+  //     win.webContents.send('setpage', 1);
+  //   }
+  //   if (input.control && input.key.toLocaleLowerCase() === 'e') {
+  //     win.webContents.send('setpage', 6);
+  //   }
+  //   if (input.control && input.key.toLocaleLowerCase() === 's') {
+  //     win.webContents.send('setpage', 2);
+  //   }
+  //   if (input.control && input.key.toLocaleLowerCase() === 'f') {
+  //     win.webContents.send('setpage', 3);
+  //   }
+  //   if (input.control && input.key.toLocaleLowerCase() === 'q') {
+  //     win.webContents.send('setpage', 4);
+  //   }
+  //   if (input.control && input.key.toLocaleLowerCase() === 'w') {
+  //     win.webContents.send('setpage', 5);
+  //   }
+  // })
   win.webContents.on('will-navigate', function(e, url) {
     e.preventDefault();
     require('electron').shell.openExternal(url)
