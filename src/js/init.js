@@ -74,6 +74,9 @@ init.initipc = function (win, ipc, shell, app) {
       win.webContents.downloadURL(args.path);
     })
   })
+  ipc.on('searchapi', function(event, args) {
+    conf.getapi(win)
+  })
   init.watchdownload(win)
   // setInterval(() => { init.readbit() }, 1000);// 读取cpu使用量
 }

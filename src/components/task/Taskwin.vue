@@ -34,6 +34,7 @@ export default {
   created: function() {
     this.getlins();
     this.$bus.on('taskreload', this.getlins)
+    this.$ipc.on('taskreload', this.getlins)
   },
   methods: {
     getlins() {
@@ -46,7 +47,7 @@ export default {
         });
       }).catch(function(error) {
         console.log(error)
-        that.$bus.emit('showsetapi', true)
+        if (that.lin === {}) that.$bus.emit('showsetapi', true)
       });
     },
     withtik(tik) {

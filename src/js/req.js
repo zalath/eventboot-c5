@@ -2,7 +2,10 @@ import axios from 'axios';
 import qs from 'qs';
 export default {
   get: function(conf, url) {
-    return axios.get(conf.conf.api + url);
+    return this.get(conf.conf.api + url);
+  },
+  ipget: function(url) {
+    return axios.get(url)
   },
   post: function(conf, url, data) {
     return axios.post(conf.conf.api + url, qs.stringify(data), {
