@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="mainbody">
+      <Ipbar />
       <Menu />
       <Task/>
       <Note/>
@@ -13,6 +14,7 @@
   </div>
 </template>
 <script>
+import Ipbar from './Ipbar';
 import Task from './task/Task';
 import Starter from './Starter';
 import Conf from './Conf';
@@ -24,6 +26,7 @@ import Menu from './Menu';
 // import Watcher from './Watcher'
 export default {
   components: {
+    Ipbar,
     Menu,
     Task,
     Starter,

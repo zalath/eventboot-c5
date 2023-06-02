@@ -4,6 +4,7 @@
       <input class="fs30" type="text" v-model="apiurl" />
       <input class="fs30" type="text" v-model="apiport" />
       <a class='fs30 fa fa-refresh' @click='reload()' />
+      <a class='fs30 fa fa-retweet' @click='searchapi()' />
     </div>
   </div>
 </template>
@@ -37,6 +38,9 @@ export default {
       } else {
         this.showsetapi = !this.showsetapi
       }
+    },
+    searchapi() {
+      this.$ipc.send('searchapi')
     }
   }
 }
@@ -44,7 +48,10 @@ export default {
 
 <style lang="stylus" scoped>
 .space
-  position absolute
+  position fixed
+  top 50%
+  left 50%
+  transform translate(-50%,-50%)
   width 90%
   background-color black
   z-index 10

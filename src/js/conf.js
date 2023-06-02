@@ -3,7 +3,6 @@
 const { default: req } = require('./req');
 
 class conf { }
-conf.isApiReady = false
 conf.getconfig = function() {
   var path = process.cwd() + '/c.json'
   var fs = require('fs')
@@ -16,7 +15,6 @@ conf.getconfig = function() {
 conf.getapi = function(win) {
   var pre = global.gconf.conf.api.substring(0, global.gconf.conf.api.lastIndexOf('.') + 1)
   for (let i = 1; i < 256; i++) {
-    if (this.isApiReady === true) return
     var fullip = pre + i + ':10488/';
     this.checkapi(fullip, win)
   }
@@ -25,7 +23,6 @@ conf.checkapi = function(ip, win) {
   var ipreq = ip + 'ping';
   req.ipget(ipreq).then((res) => {
     if (res.data.message === 'pong') {
-      this.isApiReady = true
       global.gconf.conf.api = ip
       this.setconfig(null, global.gconf)
       win.webContents.send('loaded', global.gconf)

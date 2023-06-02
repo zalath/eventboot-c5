@@ -6,7 +6,6 @@
       <a class='tik tik1' @click='withtik(1)' />
       <a class='tik tik2' @click='withtik(2)' />
       <a class='fa fa-search' @click='opensearch()' />
-      <a class='fa fa-terminal' @click='showsetapi()' />
     </div>
     <searchpad></searchpad>
     <noteline v-if="dataready" :lin='lin' :key='lin.id'/>
@@ -55,9 +54,6 @@ export default {
     },
     opensearch() {
       this.$bus.emit('nshowsearch')
-    },
-    showsetapi() {
-      this.$bus.emit('showsetapi')
     }
   }
 }
