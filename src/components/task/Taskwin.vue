@@ -31,7 +31,7 @@ export default {
     }
   },
   created: function() {
-    this.getlins();
+    // this.getlins();
     this.$bus.on('taskreload', this.getlins)
     this.$ipc.on('taskreload', this.getlins)
   },
@@ -43,6 +43,7 @@ export default {
         req.post(this.$store.state.conf, 'list', { id: 0 }).then((res) => {
           that.lin.Child = res.data
           that.dataready = true
+          console.log('task reloaded')
         });
       }).catch(function(error) {
         console.log(error)

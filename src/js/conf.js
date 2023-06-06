@@ -16,6 +16,7 @@ conf.getapi = function(win) {
   var pre = global.gconf.conf.api.substring(0, global.gconf.conf.api.lastIndexOf('.') + 1)
   for (let i = 1; i < 256; i++) {
     var fullip = pre + i + ':10488/';
+    // console.log(fullip)
     this.checkapi(fullip, win)
   }
 }

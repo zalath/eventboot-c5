@@ -5,6 +5,7 @@
       <input class="fs30" type="text" v-model="apiport" />
       <a class='fs30 fa fa-refresh' @click='reload()' />
       <a class='fs30 fa fa-retweet' @click='searchapi()' />
+      <a class='fs30 fa fa-times' @click='show(false)' />
     </div>
   </div>
 </template>
@@ -23,6 +24,7 @@ export default {
   },
   created() {
     this.$bus.on('showsetapi', this.show)
+    this.$ipc.on('taskreload', this.hide)
   },
   methods: {
     reload() {
@@ -32,14 +34,18 @@ export default {
       this.$bus.emit('taskreload')
       this.showsetapi = false
     },
+    hide() {
+      this.show(false)
+    },
     show(val) {
-      if (val) {
+      if (typeof val === 'boolean') {
         this.showsetapi = val
       } else {
         this.showsetapi = !this.showsetapi
       }
     },
     searchapi() {
+      console.log('sending')
       this.$ipc.send('searchapi')
     }
   }
