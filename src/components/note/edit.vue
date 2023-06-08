@@ -115,11 +115,14 @@ export default {
       });
     },
     edit(da) {
-      this.lin = da.lin;
-      this.replaceMarkdownUrl('a-url')
-      this.pid = da.lin.pid;
-      this.toMarkdown(this.lin.content)
-      this.show('edit');
+      if (this.isshow === true) this.isshow = false
+      else {
+        this.lin = da.lin;
+        this.replaceMarkdownUrl('a-url')
+        this.pid = da.lin.pid;
+        this.toMarkdown(this.lin.content)
+        this.show('edit');
+      }
     },
     new(da) {
       this.pid = da.pid;

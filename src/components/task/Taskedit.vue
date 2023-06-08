@@ -73,9 +73,12 @@ export default {
       });
     },
     edit(da) {
-      this.lin = da.lin;
-      this.pid = da.lin.pid;
-      this.show('edit');
+      if (this.isshow === true) this.isshow = false
+      else {
+        this.lin = da.lin;
+        this.pid = da.lin.pid;
+        this.show('edit');
+      }
     },
     new(da) {
       this.pid = da.pid;

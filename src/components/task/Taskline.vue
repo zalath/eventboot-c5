@@ -4,6 +4,7 @@
       <btntik :lin="tlin"></btntik>
       <a :class="'tikname' + tlin.tik" @click='showlins()'>{{ tlin.title }}
         <!-- <a v-if='tlin.ct > 0'>{{ tlin.ct }}</a> -->
+        <i v-if="tlin.file != ''" class="fa fa-image image"></i>
       </a>
       <template v-if="lin.tikc.length > 0">
         <a v-for="(t) in tlin.tikc" :key="t.tik">
@@ -165,15 +166,7 @@ a
 .fblack
   color black
   padding 3px
-.taskline
-  &:hover {
-    .tikborder {
-      animation run 200ms forwards
-    }
-  }
-@keyframes run
-  from
-    clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,0 90%)
-  to
-    clip-path polygon(10% 20%, 20% 10%, 100% 10%, 90% 70%, 80% 90%,100% 90%)
+.image
+  color white
+  margin-left 10px
 </style>

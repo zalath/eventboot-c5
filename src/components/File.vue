@@ -32,6 +32,7 @@
 import req from '../js/req'
 import blankimg from '../assets/blank.png'
 import pgbar from './com/progressbar'
+// 文件上传及展示模块
 export default {
   name: 'file',
   components: {
