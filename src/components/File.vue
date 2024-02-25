@@ -17,12 +17,19 @@
     </div>
     <button class="fileadd fa fa-plus" v-on:click="addFile()" />
     <input type="file" ref="file" class="hide" @change="tempFile($event)"/>
-    <div class="bigpicdisplay" v-if="bigpic.isshow">
-      <img :src="bigpic.pic" @click="bigpic.isshow=false" @error="e => { e.target.src = blankimg }">
+    <div :style="'width:' + bigpic.boxwidth + ';height:' + bigpic.boxheight" class="bigpicdisplay" v-if="bigpic.isshow">
+      <div class="imgbox">
+        <img @mousedown="zoommove" @mousewheel="zoom" :style="'left:' + bigpic.imgleft + 'px;top:' + bigpic.imgtop + 'px;width:' + bigpic.imgwidth + '%;height:' + bigpic.imgheight + '%;'" :src="bigpic.pic" @contextmenu="bigpic.isshow=false;bigpic.imgwidth=100;bigpic.imgheight=100" @error="e => { e.target.src = blankimg }">
+        <!-- <img @mousedown="zoommove" @mousewheel="zoom" :style="'left:' + bigpic.imgleft + 'px;top:' + bigpic.imgtop + 'px;width:' + bigpic.imgwidth + '%;'" :src="bigpic.pic" @contextmenu="bigpic.isshow=false;bigpic.imgwidth=100;bigpic.imgheight=100" @error="e => { e.target.src = blankimg }"> -->
+      </div>
       <pgbar class="middle" v-if="downloadRate > 0 && downloadRate < 100" :now="downloadRate" :h="1.5"/>
-      <div class="bigpicfilename">
+      <div class="bottom bigpicfilename">
         <span>&nbsp;{{bigpic.filename}}</span>
-        <button v-if="bigpic.isdownload" class="bigpicbtn fa fa-level-down" @click="download()" />
+      </div>
+      <div class="bottom bigpicfilebtn">
+        <button v-if="bigpic.isdownload" class="bigpicbtn fa fa-download" @click="download()" />
+        <button class="bigpicbtn fa fa-eye" @click="resize()" />
+        <button class="bigpicbtn fa fa-arrows-alt" @click="setimgheight()" />
       </div>
     </div>
   </div>
@@ -52,7 +59,15 @@ export default {
         pic: '',
         isshow: false,
         isdownload: true,
-        index: 0
+        index: 0,
+        boxwidth: '50%',
+        boxheight: '50%',
+        imgleft: 0,
+        imgtop: 0,
+        imgwidth: 100,
+        imgheight: 100,
+        imgheightval: 100,
+        imgzoom: 100
       },
       downloadRate: 0,
       fileup: [],
@@ -82,6 +97,11 @@ export default {
     }
     this.newindex = this.filelist.length
   },
+  watch: {
+    'bigpic.imgheightval'(newval, oldval) {
+      this.bigpic.imgheight = this.bigpic.imgheight ? newval : false
+    }
+  },
   methods: {
     // 文件预览
     toBigpic(i) {
@@ -90,6 +110,7 @@ export default {
       this.bigpic.filename = this.getfilename(i)
       this.bigpic.isdownload = !(this.filelist[i] === undefined)
       this.bigpic.index = i
+      this.resetzoom()
     },
     showname(i) {
       this.filename = this.getfilename(i)
@@ -109,6 +130,46 @@ export default {
       var i = this.bigpic.index
       this.downloadRate = 0
       this.electronDownload(i)
+    },
+    resize() {
+      this.bigpic.boxwidth = this.bigpic.boxwidth === '100%' ? '50%' : '100%'
+      this.bigpic.boxheight = this.bigpic.boxheight === '100%' ? '50%' : '100%'
+      this.resetzoom()
+    },
+    resetzoom() {
+      this.bigpic.imgleft = 0
+      this.bigpic.imgtop = 0
+      this.bigpic.imgwidth = 100
+      this.bigpic.imgheightval = 100
+    },
+    zoom(e) {
+      // console.log(e.deltaY)
+      if (e.deltaY > 0) { // zoom in
+        this.bigpic.imgleft += 15;
+        this.bigpic.imgtop += 15;
+        this.bigpic.imgwidth -= 15;
+        this.bigpic.imgheightval -= 15;
+      } else {
+        this.bigpic.imgleft -= 15;
+        this.bigpic.imgtop -= 15;
+        this.bigpic.imgwidth += 15;
+        this.bigpic.imgheightval += 15;
+      }
+    },
+    zoommove(e) {
+      e.preventDefault()
+      e.target.addEventListener('mousemove', this.moving)
+      var that = this
+      e.target.addEventListener('mouseup', function(el) {
+        e.target.removeEventListener('mousemove', that.moving);
+      })
+    },
+    moving(e) {
+      this.bigpic.imgleft += e.movementX
+      this.bigpic.imgtop += e.movementY
+    },
+    setimgheight() {
+      this.bigpic.imgheight = this.bigpic.imgheight ? false : this.bigpic.imgheightval
     },
     electronDownload(i) {
       var d = {
@@ -311,20 +372,29 @@ export default {
   font-size 11px
   line-height 1.5rem
   text-align center
+.bigpicdisplay .imgbox
+  position relative
+  height 100%
+  width 100%
+  border solid 1px red
+  overflow hidden
 .bigpicdisplay img
-  max-width 50rem
-  max-height 50rem
+  position absolute
+.bigpicdisplay .bottom
+  width 100%
+  position absolute
+  bottom -1.7rem
   border solid 1px red
 .bigpicfilename
   background red
-  padding 0px .5rem
+.bigpicfilebtn
+  height 1.5rem
   &:hover
     .bigpicbtn
       display inline-block
 .bigpicbtn
   display none
-  position absolute
-  right 0px
+  float right
   background red
   border none
   color white
